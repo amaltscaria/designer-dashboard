@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Designer Dashboard Case Study | Arun T Scaria",
-  description: "A centralized dashboard designed for stakeholders and clients, enabling effortless customization of web interfaces to meet unique requirements.",
+  title: "Program Admin Dashboard | Arun T Scaria",
+  description: "Administrative dashboard for program management, featuring comprehensive analytics, user management, and workflow optimization tools.",
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>",
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>",
   },
 };
 
