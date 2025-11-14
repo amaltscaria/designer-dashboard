@@ -4,16 +4,41 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import ScrollAnimation from '../components/ScrollAnimation'
-import TiltCard from '../components/TiltCard'
 
-const image = {
-  url: 'https://res.cloudinary.com/deveb1jqw/image/upload/v1732908708/Program%20Admin%20Dashboard/Program_admin_dashboard_ovlgwv.png',
-  width: 1400,
-  height: 5320,
-  alt: 'Program Admin Dashboard'
-}
+const images = [
+  {
+    url: 'https://res.cloudinary.com/deveb1jqw/image/upload/v1732193941/DD/DD1_gdlq7e.png',
+    width: 1400,
+    height: 1521,
+    alt: 'Designer Dashboard - Overview'
+  },
+  {
+    url: 'https://res.cloudinary.com/deveb1jqw/image/upload/v1732193940/DD/DD2_fqmph4.png',
+    width: 1400,
+    height: 2164,
+    alt: 'Designer Dashboard - Interface Customization'
+  },
+  {
+    url: 'https://res.cloudinary.com/deveb1jqw/image/upload/v1732193940/DD/DD3_gjgwuy.png',
+    width: 1400,
+    height: 1344,
+    alt: 'Designer Dashboard - Design System'
+  },
+  {
+    url: 'https://res.cloudinary.com/deveb1jqw/image/upload/v1732193951/DD/DD4_i6vdxr.png',
+    width: 1400,
+    height: 3338,
+    alt: 'Designer Dashboard - Workflow'
+  },
+  {
+    url: 'https://res.cloudinary.com/deveb1jqw/image/upload/v1732193950/DD/DD5_kbghet.png',
+    width: 1400,
+    height: 3086,
+    alt: 'Designer Dashboard - Implementation'
+  }
+]
 
-export default function ProgramAdminDashboard() {
+export default function DesignerDashboard() {
   const [showBackToTop, setShowBackToTop] = useState(false)
 
   const { scrollY } = useScroll()
@@ -54,9 +79,9 @@ export default function ProgramAdminDashboard() {
 
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">P</span>
+                <span className="text-white font-bold text-sm">D</span>
               </div>
-              <div className="text-xl font-bold text-white">Program Admin Dashboard</div>
+              <div className="text-xl font-bold text-white">Designer Dashboard</div>
             </div>
 
             <div className="w-24 hidden md:block"></div>
@@ -69,16 +94,16 @@ export default function ProgramAdminDashboard() {
           <ScrollAnimation>
             <div className="text-center">
               <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
-                Program Admin Dashboard
+                Designer Dashboard
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-4">Comprehensive program management solution</p>
-              <p className="text-lg text-gray-400 max-w-3xl mx-auto">Administrative dashboard with analytics, user management, and workflow optimization</p>
+              <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-4">A centralized dashboard designed for stakeholders and clients</p>
+              <p className="text-lg text-gray-400 max-w-3xl mx-auto">Enabling effortless customization of web interfaces to meet unique requirements</p>
             </div>
           </ScrollAnimation>
 
           <ScrollAnimation delay={0.2}>
             <div className="mt-12 flex flex-wrap justify-center gap-3">
-              {['Admin Dashboard', 'User Management', 'Analytics', 'Workflow Optimization', 'Figma', 'UI/UX Design'].map((tech, index) => (
+              {['Figma', 'Adobe XD', 'Adobe Illustrator', 'Lucidchart', 'Zeplin', 'Prototyping', 'Wireframing', 'User Research', 'Information Architecture', 'Interaction Design'].map((tech, index) => (
                 <span key={index} className="px-4 py-2 bg-gradient-to-br from-zinc-900 to-zinc-800 border border-white/10 rounded-full text-sm text-gray-300 hover:border-orange-500/50 transition-all duration-300">
                   {tech}
                 </span>
@@ -90,13 +115,22 @@ export default function ProgramAdminDashboard() {
 
       <section className="py-16 relative z-10">
         <div className="max-w-6xl mx-auto px-6">
-          <ScrollAnimation delay={0.1}>
-            <TiltCard className="mb-12">
-              <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-800 p-4">
-                <Image src={image.url} alt={image.alt} width={image.width} height={image.height} className="w-full h-auto rounded-lg" unoptimized />
+          {images.map((image, index) => (
+            <ScrollAnimation key={index} delay={index * 0.1}>
+              <div className="mb-12 group">
+                <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-800 p-4 transition-all duration-300 hover:border-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/10">
+                  <Image
+                    src={image.url}
+                    alt={image.alt}
+                    width={image.width}
+                    height={image.height}
+                    className="w-full h-auto rounded-lg"
+                    unoptimized
+                  />
+                </div>
               </div>
-            </TiltCard>
-          </ScrollAnimation>
+            </ScrollAnimation>
+          ))}
         </div>
       </section>
 
@@ -111,7 +145,7 @@ export default function ProgramAdminDashboard() {
             <a href="https://aruntscaria.com" target="_blank" rel="noopener noreferrer" className="px-8 py-4 border-2 border-orange-500 text-orange-400 rounded-full font-semibold hover:bg-orange-500 hover:text-white transition-all">View Portfolio</a>
           </div>
           <div className="mt-12 pt-8 border-t border-white/10">
-            <p className="text-gray-500 text-sm">© 2025 Program Admin Dashboard. Crafted with passion for exceptional user experiences.</p>
+            <p className="text-gray-500 text-sm">© 2025 Designer Dashboard. Crafted with passion for exceptional user experiences.</p>
           </div>
         </div>
       </footer>
