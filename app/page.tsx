@@ -2,8 +2,27 @@
 
 import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, animate } from 'framer-motion'
 import ScrollAnimation from '../components/ScrollAnimation'
+
+function Counter({ to, suffix = '', duration = 2 }: { to: number; suffix?: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-50px' })
+  const count = useMotionValue(0)
+  const [display, setDisplay] = useState('0')
+
+  useEffect(() => {
+    if (!inView) return
+    const controls = animate(count, to, {
+      duration,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (v) => setDisplay(Math.round(v).toLocaleString()),
+    })
+    return controls.stop
+  }, [inView, to, duration, count])
+
+  return <span ref={ref}>{display}{suffix}</span>
+}
 
 type PlatformKey = 'web' | 'mobile' | 'designer'
 
@@ -16,7 +35,6 @@ const platforms: Record<PlatformKey, {
   features: string[]
   accent: string
   icon: React.ReactNode
-  isMobile?: boolean
 }> = {
   web: {
     name: 'Web Dashboard',
@@ -43,7 +61,6 @@ const platforms: Record<PlatformKey, {
     video: '/videos/mobile-app.mp4',
     features: ['Vitals Recording', 'Reminders', 'Symptom Diary', 'Clinician Chat', 'Device Pairing', 'Education'],
     accent: 'from-amber-500 to-yellow-500',
-    isMobile: true,
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <rect x="7" y="2" width="10" height="20" rx="2" />
@@ -73,15 +90,7 @@ const ease = [0.16, 1, 0.3, 1] as const
 function PlatformSection({ platformKey, index }: { platformKey: PlatformKey; index: number }) {
   const platform = platforms[platformKey]
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [isMuted, setIsMuted] = useState(true)
   const [isPlaying, setIsPlaying] = useState(true)
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted
-      setIsMuted(!isMuted)
-    }
-  }
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -129,11 +138,11 @@ function PlatformSection({ platformKey, index }: { platformKey: PlatformKey; ind
 
       {/* Big video */}
       <ScrollAnimation delay={0.2}>
-        <div className={`relative group rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 p-3 md:p-4 hover:border-orange-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10`}>
-          <div className={`relative rounded-2xl overflow-hidden bg-black ${platform.isMobile ? 'max-w-md mx-auto aspect-[9/19]' : 'aspect-video'}`}>
+        <div className="relative group rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 p-3 md:p-4 hover:border-orange-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10">
+          <div className="relative rounded-2xl overflow-hidden bg-black aspect-video">
             <video
               ref={videoRef}
-              className="absolute inset-0 w-full h-full object-contain"
+              className="absolute inset-0 w-full h-full object-cover object-center"
               autoPlay
               muted
               loop
@@ -162,29 +171,6 @@ function PlatformSection({ platformKey, index }: { platformKey: PlatformKey; ind
                   </>
                 )}
               </motion.button>
-
-              <motion.button
-                onClick={toggleMute}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 backdrop-blur-md border rounded-full text-xs md:text-sm transition-all duration-300 ${
-                  isMuted
-                    ? 'bg-orange-500/90 border-orange-400 text-white shadow-lg shadow-orange-500/30'
-                    : 'bg-black/60 border-white/20 text-white hover:border-orange-500/50'
-                }`}
-              >
-                {isMuted ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-                    <span className="hidden sm:inline font-medium">Unmute</span>
-                  </>
-                ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                    <span className="hidden sm:inline">Sound On</span>
-                  </>
-                )}
-              </motion.button>
             </div>
 
             {/* Live badge */}
@@ -208,11 +194,30 @@ function PlatformSection({ platformKey, index }: { platformKey: PlatformKey; ind
   )
 }
 
+function InsightCard({ title, body }: { title: string; body: string }) {
+  return (
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 300 }}
+      className="bg-gradient-to-br from-zinc-900/80 to-zinc-950 border border-white/10 rounded-2xl p-6 hover:border-orange-500/30 transition-colors duration-300"
+    >
+      <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-orange-500/20 to-amber-500/10 border border-orange-500/30 flex items-center justify-center mb-4">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FB923C" strokeWidth="2.5">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </div>
+      <h4 className="text-white font-bold text-base md:text-lg mb-2">{title}</h4>
+      <p className="text-gray-400 text-sm leading-relaxed">{body}</p>
+    </motion.div>
+  )
+}
+
 export default function CareAtHome() {
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [heroVideoLoaded, setHeroVideoLoaded] = useState(false)
 
-  const { scrollY } = useScroll()
+  const { scrollYProgress, scrollY } = useScroll()
+  const scaleX = useSpring(scrollYProgress, { stiffness: 60, damping: 30 })
   const orb1Y = useTransform(scrollY, [0, 1000], [0, 200])
   const orb2Y = useTransform(scrollY, [0, 1000], [0, -150])
   const orb3Y = useTransform(scrollY, [0, 2000], [0, -300])
@@ -227,6 +232,12 @@ export default function CareAtHome() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-x-hidden">
+      {/* Scroll progress bar */}
+      <motion.div
+        style={{ scaleX, transformOrigin: '0%' }}
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-400 z-50"
+      />
+
       {/* Parallax orbs */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <motion.div style={{ y: orb1Y }} className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-orange-500/8 to-amber-500/8 rounded-full blur-[120px]" />
@@ -261,6 +272,35 @@ export default function CareAtHome() {
 
       {/* Hero — Cinematic */}
       <section className="relative min-h-screen flex flex-col justify-center items-center overflow-hidden">
+        {/* Ambient particles */}
+        <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
+          {Array.from({ length: 30 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                width: 2 + (i % 4) * 1.5,
+                height: 2 + (i % 4) * 1.5,
+                left: `${(i * 37) % 100}%`,
+                bottom: `-${5 + (i % 3) * 4}%`,
+                background: i % 3 === 0 ? '#F97316' : i % 3 === 1 ? '#FBBF24' : '#FDE68A',
+                opacity: 0.15 + (i % 5) * 0.08,
+              }}
+              animate={{
+                y: [0, -(800 + (i % 5) * 200)],
+                x: [0, (i % 2 === 0 ? 1 : -1) * (20 + (i % 4) * 15)],
+                opacity: [0, 0.4, 0],
+              }}
+              transition={{
+                duration: 8 + (i % 6) * 3,
+                repeat: Infinity,
+                delay: (i % 10) * 1.2,
+                ease: 'linear',
+              }}
+            />
+          ))}
+        </div>
+
         <div className="absolute inset-0 z-0">
           <video
             autoPlay
@@ -357,16 +397,291 @@ export default function CareAtHome() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/5">
             {[
-              { value: '3 Platforms', label: 'Ecosystem' },
-              { value: '1000+ Screens', label: 'Designed' },
-              { value: '100+ Sprints', label: 'Delivered' },
-              { value: 'Healthcare', label: 'Industry' },
+              { num: 3, suffix: '', text: 'Platforms', label: 'Ecosystem' },
+              { num: 1000, suffix: '+', text: 'Screens', label: 'Designed' },
+              { num: 100, suffix: '+', text: 'Sprints', label: 'Delivered' },
+              { num: 0, suffix: '', text: 'Healthcare', label: 'Industry' },
             ].map((stat, i) => (
               <ScrollAnimation key={stat.label} delay={i * 0.1}>
                 <div className="py-8 md:py-12 px-6 md:px-10 text-center group hover:bg-white/[0.02] transition-colors duration-500">
-                  <div className="text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-orange-400 transition-colors duration-500">{stat.value}</div>
+                  <div className="text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-orange-400 transition-colors duration-500">
+                    {stat.num > 0 ? <><Counter to={stat.num} suffix={stat.suffix} /> {stat.text}</> : stat.text}
+                  </div>
                   <div className="text-xs text-gray-600 uppercase tracking-[0.2em]">{stat.label}</div>
                 </div>
+              </ScrollAnimation>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Ecosystem Architecture — Infographic Style */}
+      <section className="relative z-10 py-24 md:py-36 px-6 overflow-hidden">
+        {/* Blueprint grid background */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(249,115,22,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.5) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-orange-500/[0.03] rounded-full blur-[200px]" />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative">
+          <ScrollAnimation>
+            <div className="mb-16 md:mb-24 text-center">
+              <p className="text-orange-400 text-xs tracking-[0.3em] uppercase mb-4">System Architecture</p>
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-white">
+                How It All{' '}
+                <span className="bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-400 bg-clip-text text-transparent">
+                  Connects
+                </span>
+              </h2>
+              <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+                Not three isolated apps — one interconnected care ecosystem where configuration, data, and actions flow between platforms in real time.
+              </p>
+            </div>
+          </ScrollAnimation>
+
+          {/* === DESKTOP: Infographic with live video previews === */}
+          <div className="hidden lg:block">
+            {/* Row 1: Designer Dashboard (center, top) */}
+            <ScrollAnimation delay={0.2}>
+              <div className="flex justify-center mb-0">
+                <div className="relative w-[520px]">
+                  <div className="absolute -inset-1 bg-gradient-to-br from-yellow-500/20 to-orange-400/20 rounded-3xl blur-xl" />
+                  <div className="relative bg-zinc-950/95 backdrop-blur-xl border border-orange-500/30 rounded-3xl p-5 shadow-2xl shadow-orange-500/10">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-400 flex items-center justify-center text-white shadow-lg">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M12 1v6m0 10v6m11-11h-6M7 12H1m15.5-7.5l-4.5 4.5M7.5 16.5L3 21m0-18l4.5 4.5m9 9l4.5 4.5" /></svg>
+                        </div>
+                        <div>
+                          <div className="text-white font-bold text-lg">Designer Dashboard</div>
+                          <div className="text-orange-400/80 text-xs italic">Control Plane — For Admins & Clients</div>
+                        </div>
+                      </div>
+                      <span className="text-[9px] font-bold tracking-[0.25em] text-orange-400/50 bg-orange-500/10 px-3 py-1 rounded-full border border-orange-500/20">CONFIGURE</span>
+                    </div>
+                    <div className="rounded-xl overflow-hidden border border-white/10 aspect-video bg-black">
+                      <video autoPlay muted loop playsInline className="w-full h-full object-cover">
+                        <source src="/videos/designer-dashboard.mp4" type="video/mp4" />
+                      </video>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {['Care Paths', 'Programs', 'Questionnaires', 'Monitoring Rules', 'Branding'].map(t => (
+                        <span key={t} className="text-[10px] px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-300/80 border border-orange-500/20">{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ScrollAnimation>
+
+            {/* Flow pipes: Designer → Patient & Designer → Clinician */}
+            <ScrollAnimation delay={0.4}>
+              <div className="flex justify-center py-2">
+                <div className="relative w-[700px] h-[100px]">
+                  <svg viewBox="0 0 700 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <linearGradient id="pipe-left" x1="50%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#F97316" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#F97316" stopOpacity="0.3" />
+                      </linearGradient>
+                      <linearGradient id="pipe-right" x1="50%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#F97316" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#F97316" stopOpacity="0.3" />
+                      </linearGradient>
+                      <filter id="pipeGlow">
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                      </filter>
+                    </defs>
+                    {/* Left pipe: Designer → Patient */}
+                    <motion.path d="M 350 0 C 350 50, 100 50, 100 100" stroke="url(#pipe-left)" strokeWidth="4" fill="none" filter="url(#pipeGlow)" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.2 }} />
+                    {/* Right pipe: Designer → Clinician */}
+                    <motion.path d="M 350 0 C 350 50, 600 50, 600 100" stroke="url(#pipe-right)" strokeWidth="4" fill="none" filter="url(#pipeGlow)" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.4 }} />
+                    {/* Arrowheads */}
+                    <polygon points="95,92 100,104 105,92" fill="#F97316" opacity="0.7" />
+                    <polygon points="595,92 600,104 605,92" fill="#F97316" opacity="0.7" />
+                    {/* Animated dots */}
+                    <circle r="5" fill="#F97316" filter="url(#pipeGlow)">
+                      <animateMotion dur="2s" repeatCount="indefinite" path="M 350 0 C 350 50, 100 50, 100 100" />
+                    </circle>
+                    <circle r="5" fill="#F97316" filter="url(#pipeGlow)">
+                      <animateMotion dur="2s" repeatCount="indefinite" path="M 350 0 C 350 50, 600 50, 600 100" begin="0.5s" />
+                    </circle>
+                  </svg>
+                  {/* Labels on pipes */}
+                  <div className="absolute top-1/2 left-[18%] -translate-y-1/2">
+                    <span className="text-[11px] font-semibold text-orange-300/90 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-orange-500/30 whitespace-nowrap">Configures patient flows</span>
+                  </div>
+                  <div className="absolute top-1/2 right-[10%] -translate-y-1/2">
+                    <span className="text-[11px] font-semibold text-orange-300/90 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-orange-500/30 whitespace-nowrap">Configures clinician dashboards</span>
+                  </div>
+                </div>
+              </div>
+            </ScrollAnimation>
+
+            {/* Row 2: Patient App (left) & Clinician Dashboard (right) */}
+            <div className="grid grid-cols-2 gap-8">
+              <ScrollAnimation delay={0.5}>
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-gradient-to-br from-amber-500/15 to-yellow-500/15 rounded-3xl blur-xl" />
+                  <div className="relative bg-zinc-950/95 backdrop-blur-xl border border-amber-500/30 rounded-3xl p-5 shadow-2xl shadow-amber-500/10">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center text-white shadow-lg">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2" /><line x1="11" y1="18" x2="13" y2="18" /></svg>
+                        </div>
+                        <div>
+                          <div className="text-white font-bold text-lg">Patient App</div>
+                          <div className="text-amber-400/80 text-xs italic">Data Source — For Patients</div>
+                        </div>
+                      </div>
+                      <span className="text-[9px] font-bold tracking-[0.25em] text-amber-400/50 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">CAPTURE</span>
+                    </div>
+                    <div className="rounded-xl overflow-hidden border border-white/10 aspect-video bg-black">
+                      <video autoPlay muted loop playsInline className="w-full h-full object-cover">
+                        <source src="/videos/mobile-app.mp4" type="video/mp4" />
+                      </video>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {['Vitals Recording', 'Reminders', 'Symptom Diary', 'Clinician Chat', 'Device Pairing'].map(t => (
+                        <span key={t} className="text-[10px] px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300/80 border border-amber-500/20">{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </ScrollAnimation>
+
+              <ScrollAnimation delay={0.6}>
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-gradient-to-br from-orange-500/15 to-amber-500/15 rounded-3xl blur-xl" />
+                  <div className="relative bg-zinc-950/95 backdrop-blur-xl border border-orange-500/30 rounded-3xl p-5 shadow-2xl shadow-orange-500/10">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2" /><line x1="3" y1="20" x2="21" y2="20" /><line x1="9" y1="16" x2="9" y2="20" /><line x1="15" y1="16" x2="15" y2="20" /></svg>
+                        </div>
+                        <div>
+                          <div className="text-white font-bold text-lg">Clinician Dashboard</div>
+                          <div className="text-orange-400/80 text-xs italic">Care Delivery — For Providers</div>
+                        </div>
+                      </div>
+                      <span className="text-[9px] font-bold tracking-[0.25em] text-orange-400/50 bg-orange-500/10 px-3 py-1 rounded-full border border-orange-500/20">MONITOR</span>
+                    </div>
+                    <div className="rounded-xl overflow-hidden border border-white/10 aspect-video bg-black">
+                      <video autoPlay muted loop playsInline className="w-full h-full object-cover">
+                        <source src="/videos/web-dashboard.mp4" type="video/mp4" />
+                      </video>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {['Vitals Monitoring', 'Patient Records', 'Care Plans', 'Alert System', 'Analytics'].map(t => (
+                        <span key={t} className="text-[10px] px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-300/80 border border-orange-500/20">{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </ScrollAnimation>
+            </div>
+
+            {/* Flow pipe: Patient ↔ Clinician (bidirectional) */}
+            <ScrollAnimation delay={0.7}>
+              <div className="flex justify-center py-3">
+                <div className="relative w-[700px] h-[70px]">
+                  <svg viewBox="0 0 700 70" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <linearGradient id="pipe-bidir" x1="0%" y1="50%" x2="100%" y2="50%">
+                        <stop offset="0%" stopColor="#FBBF24" stopOpacity="0.5" />
+                        <stop offset="50%" stopColor="#FDE68A" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#FBBF24" stopOpacity="0.5" />
+                      </linearGradient>
+                    </defs>
+                    {/* Top line: Patient → Clinician */}
+                    <motion.path d="M 80 25 Q 350 5 620 25" stroke="url(#pipe-bidir)" strokeWidth="3" fill="none" filter="url(#pipeGlow)" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1.2 }} />
+                    {/* Bottom line: Clinician → Patient */}
+                    <motion.path d="M 620 45 Q 350 65 80 45" stroke="url(#pipe-bidir)" strokeWidth="3" fill="none" filter="url(#pipeGlow)" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1.2, delay: 0.3 }} />
+                    {/* Arrows */}
+                    <polygon points="615,18 625,25 615,32" fill="#FBBF24" opacity="0.7" />
+                    <polygon points="85,38 75,45 85,52" fill="#FBBF24" opacity="0.7" />
+                    {/* Animated dots */}
+                    <circle r="4" fill="#FBBF24" filter="url(#pipeGlow)">
+                      <animateMotion dur="2.5s" repeatCount="indefinite" path="M 80 25 Q 350 5 620 25" />
+                    </circle>
+                    <circle r="4" fill="#FBBF24" filter="url(#pipeGlow)">
+                      <animateMotion dur="2.5s" repeatCount="indefinite" path="M 620 45 Q 350 65 80 45" begin="1.2s" />
+                    </circle>
+                  </svg>
+                  {/* Labels */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1">
+                    <span className="text-[11px] font-semibold text-amber-200/90 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-amber-500/30 whitespace-nowrap">Vitals, meds & daily tasks shared in real time</span>
+                  </div>
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1">
+                    <span className="text-[11px] font-semibold text-amber-200/90 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-amber-500/30 whitespace-nowrap">Clinicians update tasks & treatment for patients</span>
+                  </div>
+                </div>
+              </div>
+            </ScrollAnimation>
+          </div>
+
+          {/* === MOBILE & TABLET: vertical flow with video previews === */}
+          <div className="lg:hidden space-y-0">
+            {[
+              { name: 'Designer Dashboard', role: 'Control Plane', audience: 'Admins & Clients', accent: 'from-yellow-500 to-orange-400', accentBorder: 'border-orange-500/30', video: '/videos/designer-dashboard.mp4', tags: ['Care Paths', 'Programs', 'Rules', 'Branding'] },
+              { name: 'Patient App', role: 'Data Source', audience: 'Patients', accent: 'from-amber-500 to-yellow-500', accentBorder: 'border-amber-500/30', video: '/videos/mobile-app.mp4', tags: ['Vitals', 'Reminders', 'Symptoms', 'Chat'] },
+              { name: 'Clinician Dashboard', role: 'Care Delivery', audience: 'Healthcare Providers', accent: 'from-orange-500 to-amber-500', accentBorder: 'border-orange-500/30', video: '/videos/web-dashboard.mp4', tags: ['Alerts', 'Records', 'Analytics', 'Care Plans'] },
+            ].map((node, i) => (
+              <div key={node.name}>
+                <ScrollAnimation delay={i * 0.15}>
+                  <div className="relative">
+                    <div className={`absolute -inset-0.5 bg-gradient-to-br ${node.accent} rounded-2xl opacity-10 blur-sm`} />
+                    <div className={`relative bg-zinc-950/90 backdrop-blur-xl border ${node.accentBorder} rounded-2xl p-4`}>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${node.accent} flex items-center justify-center`}>
+                          <span className="text-white font-black text-xs">0{i + 1}</span>
+                        </div>
+                        <div>
+                          <div className="text-white font-bold">{node.name}</div>
+                          <div className="text-orange-400/80 text-xs italic">{node.role} — {node.audience}</div>
+                        </div>
+                      </div>
+                      <div className="rounded-lg overflow-hidden border border-white/10 aspect-video bg-black mb-3">
+                        <video autoPlay muted loop playsInline className="w-full h-full object-cover">
+                          <source src={node.video} type="video/mp4" />
+                        </video>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {node.tags.map(t => (
+                          <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-300/80 border border-orange-500/20">{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </ScrollAnimation>
+                {i < 2 && (
+                  <div className="flex flex-col items-center py-3">
+                    <svg width="24" height="50" viewBox="0 0 24 50">
+                      <line x1="12" y1="0" x2="12" y2="40" stroke="#F97316" strokeWidth="3" strokeLinecap="round" opacity="0.5" />
+                      <polygon points="6,36 12,48 18,36" fill="#F97316" opacity="0.6" />
+                      <circle r="3" fill="#F97316" opacity="0.8">
+                        <animateMotion dur="1.5s" repeatCount="indefinite" path="M12,0 L12,40" />
+                      </circle>
+                    </svg>
+                    <span className="text-[10px] tracking-[0.15em] uppercase text-orange-400/70 font-semibold mt-1">
+                      {i === 0 ? 'Configures both platforms' : 'Real-time patient data'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Insight strip */}
+          <div className="grid md:grid-cols-3 gap-5 mt-20 md:mt-28 max-w-5xl mx-auto">
+            {[
+              { title: 'Single Source of Truth', body: 'Designer Dashboard owns every care path, questionnaire, and monitoring rule — pushed to both apps without a redeploy.' },
+              { title: 'Bidirectional Care Loop', body: 'Patients record vitals and complete tasks; clinicians review, adjust, and respond — all in real time.' },
+              { title: 'Role-Aware Design', body: 'Tasks for patients, alerts for clinicians, controls for admins — three languages, one shared design system.' },
+            ].map((card, i) => (
+              <ScrollAnimation key={card.title} delay={0.3 + i * 0.15}>
+                <InsightCard title={card.title} body={card.body} />
               </ScrollAnimation>
             ))}
           </div>
@@ -381,7 +696,7 @@ export default function CareAtHome() {
               <p className="text-orange-400 text-xs tracking-[0.3em] uppercase mb-4">The Ecosystem</p>
               <h2 className="text-4xl md:text-6xl font-bold mb-6">Three Products. One Mission.</h2>
               <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
-                Each prototype plays live below — with sound, interactions, and the full experience.
+                Each prototype plays live below — real flows, real interactions, the full experience.
               </p>
             </div>
           </ScrollAnimation>
