@@ -194,6 +194,452 @@ function PlatformSection({ platformKey, index }: { platformKey: PlatformKey; ind
   )
 }
 
+type Story = {
+  chapter: string
+  name: string
+  subtitle: string
+  beats: {
+    quote: string
+    intro: string
+    boldPhrase?: string
+    introTail?: string
+  }
+  scene: { value: string; label: string }[]
+  beat3: { title: string; intro: string; type: 'downstream' | 'patient-view' | 'five-tabs'; cards?: { title: string; body: string }[]; image1?: { src: string; caption: string }; image2?: { src: string; caption: string } }
+  beat4: { title: string; intro: string; type: 'depth' | 'today' | 'data-grid'; image1?: { src: string; caption: string }; image2?: { src: string; caption: string }; quote?: string; quoteBody?: string; cards?: { title: string; body: string }[] }
+  painpoints: { eyebrow: string; text: string }[]
+  beat6: { existing: { items: string[]; tagline: string }; future: { items: string[]; tagline: string } }
+  explorations: { status: 'rejected' | 'shipped'; title: string; body: string; image?: string }[]
+  tradeoff: string
+  unlocked: { body: string; sub: string; image?: { src: string; caption: string } }
+  prototypeUrl: string
+}
+
+const stories: Story[] = [
+  {
+    chapter: '01',
+    name: 'Patient App',
+    subtitle: 'Daily care for people who are unwell, without overwhelming them',
+    beats: {
+      quote: '"If recording vitals takes ten minutes, elderly patients give up. We need it to take two."',
+      intro: 'Care@Home is remote care. Patients are at home, not in hospital. They are often elderly, often managing multiple chronic conditions. The app cannot ask too much. ',
+      boldPhrase: 'Every extra tap is a missed reading. Every missed reading is a clinical risk.',
+      introTail: ' Every confused patient is one who stops using it.',
+    },
+    scene: [
+      { value: '1', label: 'Designer (sole)' },
+      { value: '1', label: 'PM' },
+      { value: '5+', label: 'Engineers' },
+      { value: '100+', label: 'Sprints' },
+    ],
+    beat3: {
+      title: '03 · FIVE TABS, ONE GOAL',
+      intro: 'The bottom navigation is the entire product. If it does not work, nothing else matters.',
+      type: 'five-tabs',
+      cards: [
+        { title: 'Today', body: 'What needs doing right now' },
+        { title: 'Vitals', body: 'Record and review measurements' },
+        { title: 'Medication', body: 'What to take, when' },
+        { title: 'Activity', body: 'What you completed today' },
+        { title: 'Settings', body: 'Devices, preferences, support' },
+      ],
+    },
+    beat4: {
+      title: '04 · THE TODAY SCREEN',
+      intro: 'When a patient opens the app, they see one thing first: what they need to do today, in plain language, with their device status confirming everything is ready.',
+      type: 'today',
+      quote: '"By 11 AM, record your blood pressure. Your wearable is 100% charged. Your BP cuff is ready."',
+      quoteBody: 'Not a calendar. Not a list of metrics. Not a wall of charts. Just the next task, the device they need, and the time. Recognition, not recall.',
+    },
+    painpoints: [
+      { eyebrow: 'PATIENTS', text: 'Cognitive overload from too many options' },
+      { eyebrow: 'DEVICES', text: 'Pairing felt as complex as setting up a new phone' },
+      { eyebrow: 'DATA', text: 'Missed readings meant clinicians lost visibility' },
+    ],
+    beat6: {
+      existing: {
+        items: ['Open app to a complex dashboard', 'Hunt for "record BP" button', 'Pair device manually each time', 'Navigate through three screens', 'Submit and confirm', 'Total time: 8-10 minutes'],
+        tagline: 'Friction. Frustration. Patients give up.',
+      },
+      future: {
+        items: ["Open app, see today's task", 'Tap "Record BP"', 'Device auto pairs (already known)', 'Reading captured automatically', 'Confirm with one tap', 'Total time: 2 minutes'],
+        tagline: 'Easy. Habitual. Patients return daily.',
+      },
+    },
+    explorations: [
+      { status: 'rejected', title: 'Calendar grid view', body: 'Showed everything at once. Felt clinical and overwhelming. Elderly patients felt judged by what they had not yet done.' },
+      { status: 'rejected', title: 'Long checklist', body: 'Too many items visible. Patients lost focus. The next thing they needed to do was buried.' },
+      { status: 'shipped', title: 'One task card at a time', body: 'Always shows the single next thing to do. Plain language. Time stamped. Device status confirmed. No friction.', image: '/images/patient-app/01-home-today.png' },
+    ],
+    tradeoff: 'Power users who liked seeing the whole week at a glance lost the calendar view by default. It is still available behind a setting, but the home screen now shows only the next task. The 80% of patients who were overwhelmed mattered more than the 20% who were confident.',
+    unlocked: {
+      body: 'Patients stopped abandoning the app in week two. Recording vitals became a 2 minute habit, not a 10 minute chore. Clinicians stopped chasing missing readings. The app became part of the daily routine, not another thing to manage.',
+      sub: 'The simplest part of the platform. The most important.',
+      image: { src: '/images/patient-app/01-home-today.png', caption: "Today's task — the heart of the patient experience" },
+    },
+    prototypeUrl: 'https://designer-dashboard.aruntscaria.com',
+  },
+  {
+    chapter: '02',
+    name: 'Web Dashboard',
+    subtitle: 'Where nurses see the complete patient picture, so no deterioration goes unnoticed',
+    beats: {
+      quote: '"These are premium clients. We cannot miss anything. Every patient deserves 100% care."',
+      intro: 'Care@Home was serving Mayo Clinic, Novartis, and other major health systems. Their patients were not in hospital beds. They were at home, monitored remotely. ',
+      boldPhrase: 'Nurses needed to spot deterioration before it became an emergency.',
+      introTail: ' Missing a single signal could mean missing a life threatening event.',
+    },
+    scene: [
+      { value: '2', label: 'Designers' },
+      { value: '1', label: 'PM' },
+      { value: '5+', label: 'Engineers' },
+      { value: '100+', label: 'Sprints' },
+    ],
+    beat3: {
+      title: '03 · THE COMPLETE PATIENT VIEW',
+      intro: 'Nurses do not just need vitals. They need the entire clinical picture in one place.',
+      type: 'patient-view',
+      cards: [
+        { title: 'Vitals', body: 'Continuous and episodic. BP, heart rate, SpO2, glucose, weight. Graphs over time.' },
+        { title: 'Information', body: 'Demographics, medical history, care team, primary and secondary care paths.' },
+        { title: 'Evaluations', body: 'How patients answered questionnaires. Heart failure, COPD, symptom reports.' },
+        { title: 'Medications', body: 'Active and discontinued. Dosage, frequency, titration notes, tolerance issues.' },
+        { title: 'Audio Samples', body: 'Cough and speech recordings for clinical analysis.' },
+        { title: 'Clinical Notes', body: 'Symptom escalations, intervention notes, observations from the care team.' },
+        { title: 'Care Logs', body: 'Operational history. Video calls, chart reviews, durations, outcomes.' },
+        { title: 'Patient Diary', body: 'Patient generated notes. "Medication out of stock." "Feet swollen today."' },
+        { title: 'Devices', body: 'Connection status, battery levels, last sync. BP cuffs, wearables, scales.' },
+      ],
+    },
+    beat4: {
+      title: '04 · STEPPING IN THEIR SHOES',
+      intro: 'Watched nurses during their monitoring shifts. Saw how they triaged. What they trusted. What they ignored. Where they got pulled into noise. Heard the same concern repeatedly: "What if I miss someone getting worse?"',
+      type: 'data-grid',
+    },
+    painpoints: [
+      { eyebrow: 'CLINICIANS', text: 'Drowning in alerts, missing the urgent ones' },
+      { eyebrow: 'DATA', text: 'Scattered across multiple tools and tabs' },
+      { eyebrow: 'TRIAGE', text: 'No way to know which patient needs attention first' },
+    ],
+    beat6: {
+      existing: {
+        items: ['Vitals in one tool', 'Notes in another', 'Medications in a third', 'Patient calls go through email', 'Nurses jump between systems', 'Critical signals get lost'],
+        tagline: 'Fragmented. Risky. Easy to miss things.',
+      },
+      future: {
+        items: ['One patient view, all data unified', 'Vitals, evaluations, medications, notes', 'Care logs and patient diary in context', 'Device status visible at a glance', 'Nurse stays in one tool', 'No data missed, no time wasted'],
+        tagline: 'Unified. Confident. Complete.',
+      },
+    },
+    explorations: [
+      { status: 'rejected', title: 'Everything on one screen', body: 'Information dense, but nurses had to scan through noise to find what mattered. Too much cognitive load.' },
+      { status: 'rejected', title: 'Alert centric dashboard', body: 'Showed alerts first, patients second. Nurses lost context. They needed the patient story, not just the alarm.' },
+      { status: 'shipped', title: 'Categorized patient view', body: 'One patient at a time. Information organized by clinical category. Nurses see what they need, when they need it. No noise, no scrolling for the signal.', image: '/images/web-dashboard/01-care-logs.png' },
+    ],
+    tradeoff: 'Nurses lost the population overview by default. The dashboard now opens to a patient list, not a vitals heatmap. Power users who liked seeing all 60 patients at once had to switch views. A deliberate choice. The depth of one patient mattered more than the breadth of all of them.',
+    unlocked: {
+      body: 'Nurses stopped opening five tools to understand one patient. The complete patient story lives in one place. Vitals, medications, evaluations, care logs, patient diary, all visible in context. No data missed. No deterioration unnoticed.',
+      sub: '100% care, the way premium clients deserve.',
+      image: { src: '/images/web-dashboard/01-care-logs.png', caption: 'Care logs — the operational nerve center' },
+    },
+    prototypeUrl: 'https://designer-dashboard.aruntscaria.com',
+  },
+  {
+    chapter: '03',
+    name: 'Designer Dashboard',
+    subtitle: 'One configuration tool. Three downstream products. Programs running across geographies and languages.',
+    beats: {
+      quote: '"Mayo Singapore needs heart failure in English, Spanish, and Chinese. Every program is a custom build."',
+      intro: 'Care@Home was rolling out to ',
+      boldPhrase: 'major US health systems and global pharma partners',
+      introTail: '. Each program needed its own care path, its own vitals, its own questionnaires, in its own languages. Engineering kept rebuilding the same setup for every new client. Onboarding took weeks per program.',
+    },
+    scene: [
+      { value: '1', label: 'Designer (sole)' },
+      { value: '1', label: 'PM' },
+      { value: '5', label: 'Engineers' },
+      { value: '1', label: 'QA' },
+      { value: '100+', label: 'Sprints' },
+    ],
+    beat3: {
+      title: '03 · ONE TOOL. THREE DOWNSTREAM PRODUCTS.',
+      intro: 'A single change in the dashboard reaches every product clinicians and patients use.',
+      type: 'downstream',
+      image1: { src: '/images/designer-dashboard/04-patient-app-vitals.png', caption: 'Patient App — what patients see' },
+      image2: { src: '/images/designer-dashboard/05-web-dashboard-carelogs.png', caption: 'Web Dashboard — what nurses see' },
+    },
+    beat4: {
+      title: '04 · WHAT THEY CONFIGURE',
+      intro: 'A program for heart failure or COPD is not one screen. It is a stack of decisions.',
+      type: 'depth',
+      image1: { src: '/images/designer-dashboard/02-vitals-monitoring.png', caption: 'Vitals scheduling, devices, compliance' },
+      image2: { src: '/images/designer-dashboard/03-multilingual-questionnaire.png', caption: 'Multilingual custom questionnaires' },
+    },
+    painpoints: [
+      { eyebrow: 'CLIENTS', text: 'No control over their own programs' },
+      { eyebrow: 'ENGINEERING', text: 'Repeating the same setup per program' },
+      { eyebrow: 'SYSTEM', text: 'No safe path between custom and consistent' },
+    ],
+    beat6: {
+      existing: {
+        items: ['Client emails clinical requirements', 'PM logs engineering tickets', 'Engineers configure manually', 'QA tests against requirements', 'Release in next sprint', 'Repeat for next program'],
+        tagline: 'Slow, manual, scales linearly with clients',
+      },
+      future: {
+        items: ['Admin opens dashboard', 'Picks care path and program', 'Configures vitals, schedules, rules', 'Previews each downstream product', 'Publishes to production'],
+        tagline: 'Self serve, safe, scales without engineering',
+      },
+    },
+    explorations: [
+      { status: 'rejected', title: 'One long form per program', body: 'Too many clicks, too many fields. Admins lost their place midway through.' },
+      { status: 'rejected', title: 'Side by side editor with live preview', body: 'The preview pulled attention away from the configuration. Admins watched the preview instead of focusing on the work.' },
+      { status: 'shipped', title: 'Nested categories, preview on demand', body: 'Drill into one category at a time. Switch tabs to preview each downstream product.', image: '/images/designer-dashboard/02-vitals-monitoring.png' },
+    ],
+    tradeoff: 'The dashboard exposes a lot. Every vital, every schedule, every language, every rule. Admins can configure it all, but it requires training. This is not a tool a nurse picks up in five minutes. A deliberate choice. Depth for the people who run the platform, simplicity for the people downstream.',
+    unlocked: {
+      body: 'Hospital onboarding stopped going through the engineering queue. Admins built and updated their own programs. The same platform now serves heart failure in Singapore, COPD elsewhere, and a dozen other protocols, without a custom build for each.',
+      sub: 'Built once. Configured infinitely.',
+      image: { src: '/images/designer-dashboard/06-carepaths-list.png', caption: 'Multiple shipped programs running in parallel' },
+    },
+    prototypeUrl: 'https://designer-dashboard.aruntscaria.com',
+  },
+]
+
+function StoryBeat({ eyebrow, children, className = '' }: { eyebrow: string; children: React.ReactNode; className?: string }) {
+  return (
+    <ScrollAnimation>
+      <div className={`mb-12 md:mb-16 ${className}`}>
+        <p className="text-[11px] tracking-[0.18em] uppercase text-orange-400/70 font-semibold mb-4">{eyebrow}</p>
+        {children}
+      </div>
+    </ScrollAnimation>
+  )
+}
+
+function StoryFigure({ src, caption, alt }: { src: string; caption?: string; alt: string }) {
+  return (
+    <figure className="m-0">
+      <div className="rounded-2xl overflow-hidden border border-white/10 bg-zinc-950">
+        <Image src={src} alt={alt} width={1600} height={1000} className="w-full h-auto" />
+      </div>
+      {caption && <figcaption className="text-xs text-gray-500 mt-3 text-center italic">{caption}</figcaption>}
+    </figure>
+  )
+}
+
+function UXStorySection({ story }: { story: Story }) {
+  return (
+    <article className="relative py-20 md:py-28 border-b border-white/5 last:border-b-0">
+      {/* Story header */}
+      <ScrollAnimation>
+        <div className="mb-14 md:mb-20 max-w-4xl">
+          <p className="text-[11px] tracking-[0.3em] uppercase text-orange-400 font-semibold mb-3">
+            The UX Story · Chapter {story.chapter}
+          </p>
+          <h3 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-5 leading-[1.05]">
+            {story.name}
+          </h3>
+          <p className="text-lg md:text-xl text-gray-400 leading-relaxed font-light max-w-3xl">
+            {story.subtitle}
+          </p>
+        </div>
+      </ScrollAnimation>
+
+      {/* Beat 1 — How it started */}
+      <StoryBeat eyebrow="01 · How it started">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-10 items-start">
+          <div>
+            <div className="bg-gradient-to-br from-orange-500/[0.08] to-amber-500/[0.04] border-l-4 border-orange-500/60 px-6 py-5 rounded-r-xl mb-5">
+              <p className="font-serif text-lg md:text-xl text-orange-100/95 leading-relaxed italic" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
+                {story.beats.quote}
+              </p>
+            </div>
+            <p className="text-gray-300 text-[15px] md:text-base leading-[1.75]">
+              {story.beats.intro}
+              {story.beats.boldPhrase && <span className="text-white font-semibold">{story.beats.boldPhrase}</span>}
+              {story.beats.introTail}
+            </p>
+          </div>
+          {story.chapter === '03' && (
+            <StoryFigure
+              src="/images/designer-dashboard/01-program-creation.png"
+              caption="Program creation: Mayo_Singapore + Novartis"
+              alt="Program creation screen showing Mayo_Singapore program with Novartis as partner"
+            />
+          )}
+        </div>
+      </StoryBeat>
+
+      {/* Beat 2 — Setting the scene */}
+      <StoryBeat eyebrow="02 · Setting the scene">
+        <div className={`grid grid-cols-2 ${story.scene.length === 5 ? 'md:grid-cols-5' : 'md:grid-cols-4'} gap-3 md:gap-4`}>
+          {story.scene.map((stat) => (
+            <div key={stat.label} className="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-6 text-center hover:border-orange-500/30 transition-colors duration-300">
+              <p className="text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</p>
+              <p className="text-[11px] tracking-wider uppercase text-gray-500">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </StoryBeat>
+
+      {/* Beat 3 — varies per story */}
+      <StoryBeat eyebrow={story.beat3.title}>
+        <p className="text-gray-300 text-[15px] md:text-base leading-[1.75] mb-7 max-w-3xl">{story.beat3.intro}</p>
+        {story.beat3.type === 'downstream' && story.beat3.image1 && story.beat3.image2 && (
+          <div className="grid md:grid-cols-2 gap-6">
+            <StoryFigure src={story.beat3.image1.src} caption={story.beat3.image1.caption} alt={story.beat3.image1.caption} />
+            <StoryFigure src={story.beat3.image2.src} caption={story.beat3.image2.caption} alt={story.beat3.image2.caption} />
+          </div>
+        )}
+        {story.beat3.type === 'five-tabs' && story.beat3.cards && (
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {story.beat3.cards.map((c) => (
+              <div key={c.title} className="bg-white/[0.03] border border-white/10 rounded-xl px-4 py-5 hover:border-orange-500/30 transition-colors">
+                <h4 className="text-white font-semibold text-sm mb-1.5">{c.title}</h4>
+                <p className="text-gray-500 text-xs leading-relaxed">{c.body}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        {story.beat3.type === 'patient-view' && story.beat3.cards && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {story.beat3.cards.map((c) => (
+              <div key={c.title} className="bg-white/[0.03] border border-white/10 rounded-xl p-5 hover:border-orange-500/30 transition-colors">
+                <h4 className="text-white font-semibold text-base mb-2">{c.title}</h4>
+                <p className="text-gray-400 text-sm leading-relaxed">{c.body}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </StoryBeat>
+
+      {/* Beat 4 — varies per story */}
+      <StoryBeat eyebrow={story.beat4.title}>
+        <p className="text-gray-300 text-[15px] md:text-base leading-[1.75] mb-7 max-w-3xl">{story.beat4.intro}</p>
+        {story.beat4.type === 'depth' && story.beat4.image1 && story.beat4.image2 && (
+          <div className="grid md:grid-cols-2 gap-6">
+            <StoryFigure src={story.beat4.image1.src} caption={story.beat4.image1.caption} alt={story.beat4.image1.caption} />
+            <StoryFigure src={story.beat4.image2.src} caption={story.beat4.image2.caption} alt={story.beat4.image2.caption} />
+          </div>
+        )}
+        {story.beat4.type === 'today' && story.beat4.quote && (
+          <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-950 border border-white/10 rounded-2xl p-6 md:p-8 max-w-3xl">
+            <p className="font-serif text-lg md:text-xl text-orange-100/90 italic leading-relaxed mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+              {story.beat4.quote}
+            </p>
+            <p className="text-gray-400 text-sm md:text-base leading-relaxed">{story.beat4.quoteBody}</p>
+          </div>
+        )}
+      </StoryBeat>
+
+      {/* Beat 5 — Key painpoints */}
+      <StoryBeat eyebrow="05 · Key painpoints">
+        <div className="grid md:grid-cols-3 gap-5 md:gap-6">
+          {story.painpoints.map((p) => (
+            <div key={p.eyebrow}>
+              <p className="text-[10px] tracking-[0.2em] uppercase text-gray-500 mb-2 font-semibold">{p.eyebrow}</p>
+              <p className="text-white text-lg md:text-xl font-medium leading-snug">{p.text}</p>
+            </div>
+          ))}
+        </div>
+      </StoryBeat>
+
+      {/* Beat 6 — Existing vs Future */}
+      <StoryBeat eyebrow="06 · Existing vs Desirable Future">
+        <div className="grid md:grid-cols-2 gap-5">
+          <div className="bg-white/[0.02] border border-red-900/30 rounded-2xl p-6">
+            <p className="text-[10px] tracking-[0.2em] uppercase text-red-400/70 mb-4 font-semibold">EXISTING</p>
+            <ol className="space-y-2.5 mb-5">
+              {story.beat6.existing.items.map((it, i) => (
+                <li key={i} className="text-gray-300 text-[14px] leading-relaxed flex gap-3">
+                  <span className="text-red-400/60 font-mono text-xs pt-0.5">{String(i + 1).padStart(2, '0')}</span>
+                  <span>{it}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="text-red-400 text-sm font-medium border-t border-red-900/30 pt-4">{story.beat6.existing.tagline}</p>
+          </div>
+          <div className="bg-white/[0.02] border border-emerald-900/30 rounded-2xl p-6">
+            <p className="text-[10px] tracking-[0.2em] uppercase text-emerald-400/70 mb-4 font-semibold">DESIRABLE FUTURE</p>
+            <ol className="space-y-2.5 mb-5">
+              {story.beat6.future.items.map((it, i) => (
+                <li key={i} className="text-gray-300 text-[14px] leading-relaxed flex gap-3">
+                  <span className="text-emerald-400/60 font-mono text-xs pt-0.5">{String(i + 1).padStart(2, '0')}</span>
+                  <span>{it}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="text-emerald-400 text-sm font-medium border-t border-emerald-900/30 pt-4">{story.beat6.future.tagline}</p>
+          </div>
+        </div>
+      </StoryBeat>
+
+      {/* Beat 7 — Designing (3 explorations) */}
+      <StoryBeat eyebrow="07 · Designing">
+        <p className="text-gray-300 text-[15px] md:text-base leading-[1.75] mb-7 max-w-3xl">Three explorations.</p>
+        <div className="grid md:grid-cols-3 gap-4">
+          {story.explorations.map((e, i) => (
+            <div
+              key={i}
+              className={`relative rounded-2xl p-6 flex flex-col ${
+                e.status === 'shipped'
+                  ? 'bg-gradient-to-br from-emerald-950/40 to-zinc-950 border-2 border-emerald-500/40 shadow-lg shadow-emerald-500/5'
+                  : 'bg-white/[0.02] border border-white/10'
+              }`}
+            >
+              <p className={`text-[10px] tracking-[0.25em] uppercase font-bold mb-3 ${e.status === 'shipped' ? 'text-emerald-400' : 'text-red-400/80'}`}>
+                {e.status === 'shipped' ? 'SHIPPED' : 'REJECTED'}
+              </p>
+              <h4 className="text-white text-lg font-semibold mb-2.5 leading-tight">{e.title}</h4>
+              <p className="text-gray-400 text-sm leading-relaxed mb-4">{e.body}</p>
+              {e.status === 'shipped' && e.image ? (
+                <div className="mt-auto rounded-lg overflow-hidden border border-emerald-500/20">
+                  <Image src={e.image} alt={`${e.title} — shipped solution`} width={1200} height={800} className="w-full h-auto" />
+                </div>
+              ) : (
+                <div className="mt-auto py-3 px-4 bg-white/[0.02] border border-white/5 rounded-lg text-center">
+                  <p className="text-gray-600 text-xs italic">No screen archived</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </StoryBeat>
+
+      {/* Beat 8 — Trade off */}
+      <StoryBeat eyebrow="08 · The trade-off">
+        <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/10 rounded-2xl p-6 md:p-8 max-w-4xl">
+          <p className="text-gray-200 text-[15px] md:text-base leading-[1.85]">{story.tradeoff}</p>
+        </div>
+      </StoryBeat>
+
+      {/* Beat 9 — What it unlocked */}
+      <StoryBeat eyebrow="09 · What it unlocked" className="mb-0">
+        <div className="grid md:grid-cols-2 gap-8 items-start">
+          <div className="bg-gradient-to-br from-orange-500/[0.08] to-amber-500/[0.03] border border-orange-500/20 rounded-2xl p-6 md:p-8">
+            <p className="text-gray-100 text-base md:text-lg leading-[1.7] mb-5">{story.unlocked.body}</p>
+            <p className="text-orange-300/80 text-sm italic mb-6">{story.unlocked.sub}</p>
+            <a
+              href={story.prototypeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 text-sm font-semibold group transition-colors"
+            >
+              See the live prototype
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:translate-x-1 transition-transform">
+                <path d="M5 12h14M13 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+          {story.unlocked.image && (
+            <StoryFigure src={story.unlocked.image.src} caption={story.unlocked.image.caption} alt={story.unlocked.image.caption} />
+          )}
+        </div>
+      </StoryBeat>
+    </article>
+  )
+}
+
 function InsightCard({ title, body }: { title: string; body: string }) {
   return (
     <motion.div
@@ -709,6 +1155,30 @@ export default function CareAtHome() {
         </div>
       </section>
 
+      {/* The UX Stories — three real case studies */}
+      <section className="relative z-10 py-24 md:py-36 px-6 bg-gradient-to-b from-transparent via-zinc-950/40 to-transparent">
+        <div className="max-w-6xl mx-auto">
+          <ScrollAnimation>
+            <div className="text-center mb-20 md:mb-28">
+              <p className="text-orange-400 text-xs tracking-[0.3em] uppercase mb-4">The Story Behind the Pixels</p>
+              <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white leading-[0.95]">
+                The UX{' '}
+                <span className="bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-400 bg-clip-text text-transparent">
+                  Stories
+                </span>
+              </h2>
+              <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+                Three connected products. Three different tensions. The decisions, the rejected explorations, and what shipped — told the way it actually happened.
+              </p>
+            </div>
+          </ScrollAnimation>
+
+          {stories.map((story) => (
+            <UXStorySection key={story.chapter} story={story} />
+          ))}
+        </div>
+      </section>
+
       {/* Project at Scale — All Screens */}
       <section className="relative z-10 py-24 md:py-32 bg-white/[0.01] border-y border-white/5">
         <div className="max-w-7xl mx-auto px-6">
@@ -757,35 +1227,6 @@ export default function CareAtHome() {
               ))}
             </div>
           </ScrollAnimation>
-        </div>
-      </section>
-
-      {/* Design Process */}
-      <section className="relative z-10 py-24 md:py-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <ScrollAnimation>
-            <div className="text-center mb-16 md:mb-20">
-              <p className="text-orange-400 text-xs tracking-[0.3em] uppercase mb-4">Methodology</p>
-              <h2 className="text-4xl md:text-5xl font-bold">Agile Design Process</h2>
-            </div>
-          </ScrollAnimation>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { num: '01', title: 'Discover', desc: 'Stakeholder workshops, clinician interviews, and patient persona development' },
-              { num: '02', title: 'Define', desc: 'Information architecture, user journeys, and platform-specific requirements' },
-              { num: '03', title: 'Design', desc: 'Wireframes, design systems, and high-fidelity prototypes across all platforms' },
-              { num: '04', title: 'Deliver', desc: 'Prototypes, design specs, and collaborative handoff with development teams' },
-            ].map((step, i) => (
-              <ScrollAnimation key={step.num} delay={i * 0.1}>
-                <div className="p-6 md:p-8 rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 hover:border-orange-500/30 hover:bg-gradient-to-br hover:from-zinc-900 hover:to-zinc-800 transition-all duration-500 h-full">
-                  <div className="text-4xl md:text-5xl font-bold text-orange-500/60 mb-4">{step.num}</div>
-                  <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
-                </div>
-              </ScrollAnimation>
-            ))}
-          </div>
         </div>
       </section>
 
