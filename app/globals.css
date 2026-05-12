@@ -29,3 +29,11 @@ body {
   background: rgba(249, 115, 22, 0.35);
   color: #ffffff;
 }
+
+.font-serif-display {
+  font-family: var(--font-serif-display), Georgia, "Times New Roman", serif;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+}

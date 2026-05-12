@@ -87,110 +87,103 @@ const platforms: Record<PlatformKey, {
 
 const ease = [0.16, 1, 0.3, 1] as const
 
-function PlatformSection({ platformKey, index }: { platformKey: PlatformKey; index: number }) {
+function PlatformIntro({ platformKey, index }: { platformKey: PlatformKey; index: number }) {
+  const platform = platforms[platformKey]
+  return (
+    <ScrollAnimation>
+      <div className="mb-8 md:mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-4">
+            <div className={`px-3 py-1.5 rounded-full bg-gradient-to-r ${platform.accent} text-white text-xs font-semibold flex items-center gap-2 shadow-lg`}>
+              <span className="text-[10px] tracking-wider uppercase">0{index + 1}</span>
+              <span className="w-1 h-1 rounded-full bg-white/60" />
+              <span>{platform.audience}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 mb-5">
+            <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${platform.accent} flex items-center justify-center text-white shadow-lg`}>
+              {platform.icon}
+            </div>
+            <h3 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white">
+              {platform.name}
+            </h3>
+          </div>
+          <p className="text-xl md:text-2xl lg:text-3xl text-orange-300 font-light italic leading-snug">
+            {platform.tagline}
+          </p>
+        </div>
+        <div className="md:max-w-md">
+          <p className="text-gray-200 text-base md:text-lg leading-relaxed">
+            {platform.description}
+          </p>
+        </div>
+      </div>
+    </ScrollAnimation>
+  )
+}
+
+function PlatformVideo({ platformKey }: { platformKey: PlatformKey }) {
   const platform = platforms[platformKey]
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [isPlaying, setIsPlaying] = useState(true)
-
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause()
-      } else {
-        videoRef.current.play()
-      }
-      setIsPlaying(!isPlaying)
-    }
-  }
 
   return (
-    <div className="relative">
-      {/* Section header */}
-      <ScrollAnimation>
-        <div className="mb-8 md:mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`px-3 py-1.5 rounded-full bg-gradient-to-r ${platform.accent} text-white text-xs font-semibold flex items-center gap-2 shadow-lg`}>
-                <span className="text-[10px] tracking-wider uppercase">0{index + 1}</span>
-                <span className="w-1 h-1 rounded-full bg-white/60" />
-                <span>{platform.audience}</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 mb-4">
-              <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${platform.accent} flex items-center justify-center text-white shadow-lg`}>
-                {platform.icon}
-              </div>
-              <h3 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white">
-                {platform.name}
-              </h3>
-            </div>
-            <p className="text-lg md:text-xl text-orange-400/90 font-light italic">
-              {platform.tagline}
-            </p>
-          </div>
-          <div className="md:max-w-md">
-            <p className="text-gray-400 text-sm md:text-base leading-relaxed">
-              {platform.description}
-            </p>
-          </div>
-        </div>
-      </ScrollAnimation>
+    <ScrollAnimation delay={0.1}>
+      <div className="relative group rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 p-3 md:p-4 hover:border-orange-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10">
+        <div className="relative rounded-2xl overflow-hidden bg-black aspect-video">
+          <video
+            ref={videoRef}
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            autoPlay
+            muted
+            loop
+            playsInline
+            controls
+            controlsList="nodownload"
+          >
+            <source src={platform.video} type="video/mp4" />
+          </video>
 
-      {/* Big video */}
-      <ScrollAnimation delay={0.2}>
-        <div className="relative group rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 p-3 md:p-4 hover:border-orange-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10">
-          <div className="relative rounded-2xl overflow-hidden bg-black aspect-video">
-            <video
-              ref={videoRef}
-              className="absolute inset-0 w-full h-full object-cover object-center"
-              autoPlay
-              muted
-              loop
-              playsInline
+          {/* Presenter rewind controls (top-right) */}
+          <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+            <motion.button
+              onClick={() => { if (videoRef.current) videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - 5) }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              title="Rewind 5 seconds"
+              className="flex items-center gap-1.5 px-3 py-2 bg-black/70 backdrop-blur-md border border-white/20 rounded-full text-white hover:border-orange-500/50 transition-colors text-xs font-medium"
             >
-              <source src={platform.video} type="video/mp4" />
-            </video>
-
-            {/* Controls */}
-            <div className="absolute top-4 right-4 z-20 flex items-center gap-2 md:gap-3">
-              <motion.button
-                onClick={togglePlay}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-black/60 backdrop-blur-md border border-white/20 rounded-full text-white hover:border-orange-500/50 transition-colors text-xs md:text-sm"
-              >
-                {isPlaying ? (
-                  <>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    <span className="hidden sm:inline">Pause</span>
-                  </>
-                ) : (
-                  <>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                    <span className="hidden sm:inline">Play</span>
-                  </>
-                )}
-              </motion.button>
-            </div>
-
-            {/* Live badge */}
-            <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-white text-xs font-medium tracking-wider">LIVE PROTOTYPE</span>
-            </div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 17l-5-5 5-5" /><path d="M18 17l-5-5 5-5" /></svg>
+              <span>5s</span>
+            </motion.button>
+            <motion.button
+              onClick={() => { if (videoRef.current) videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - 15) }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              title="Rewind 15 seconds"
+              className="flex items-center gap-1.5 px-3 py-2 bg-black/70 backdrop-blur-md border border-white/20 rounded-full text-white hover:border-orange-500/50 transition-colors text-xs font-medium"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 17l-5-5 5-5" /><path d="M18 17l-5-5 5-5" /></svg>
+              <span>15s</span>
+            </motion.button>
           </div>
 
-          {/* Feature pills */}
-          <div className="flex flex-wrap gap-2 mt-4 md:mt-5 px-1">
-            {platform.features.map((feature) => (
-              <span key={feature} className="text-xs md:text-sm text-gray-400 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 hover:border-orange-500/30 hover:text-orange-400 transition-all duration-300">
-                {feature}
-              </span>
-            ))}
+          {/* Live badge */}
+          <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20 pointer-events-none">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-white text-xs font-medium tracking-wider">LIVE PROTOTYPE</span>
           </div>
         </div>
-      </ScrollAnimation>
-    </div>
+
+        {/* Feature pills */}
+        <div className="flex flex-wrap gap-2 mt-4 md:mt-5 px-1">
+          {platform.features.map((feature) => (
+            <span key={feature} className="text-xs md:text-sm text-gray-300 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 hover:border-orange-500/30 hover:text-orange-400 transition-all duration-300">
+              {feature}
+            </span>
+          ))}
+        </div>
+      </div>
+    </ScrollAnimation>
   )
 }
 
@@ -204,9 +197,11 @@ type Story = {
     boldPhrase?: string
     introTail?: string
   }
+  beat1Image?: { src: string; caption: string }
   scene: { value: string; label: string }[]
   beat3: { title: string; intro: string; type: 'downstream' | 'patient-view' | 'five-tabs'; cards?: { title: string; body: string }[]; image1?: { src: string; caption: string }; image2?: { src: string; caption: string } }
-  beat4: { title: string; intro: string; type: 'depth' | 'today' | 'data-grid'; image1?: { src: string; caption: string }; image2?: { src: string; caption: string }; quote?: string; quoteBody?: string; cards?: { title: string; body: string }[] }
+  beat4: { title: string; intro: string; type: 'depth' | 'today' | 'data-grid'; image1?: { src: string; caption: string }; image2?: { src: string; caption: string }; quote?: string; quoteBody?: string; cards?: { title: string; body: string }[]; sideImage?: { src: string; caption: string } }
+  beat8Image?: { src: string; caption: string }
   painpoints: { eyebrow: string; text: string }[]
   beat6: { existing: { items: string[]; tagline: string }; future: { items: string[]; tagline: string } }
   explorations: { status: 'rejected' | 'shipped'; title: string; body: string; image?: string }[]
@@ -215,72 +210,12 @@ type Story = {
   prototypeUrl: string
 }
 
-const stories: Story[] = [
+type StoryWithKey = Story & { platformKey: PlatformKey }
+
+const stories: StoryWithKey[] = [
   {
     chapter: '01',
-    name: 'Patient App',
-    subtitle: 'Daily care for people who are unwell, without overwhelming them',
-    beats: {
-      quote: '"If recording vitals takes ten minutes, elderly patients give up. We need it to take two."',
-      intro: 'Care@Home is remote care. Patients are at home, not in hospital. They are often elderly, often managing multiple chronic conditions. The app cannot ask too much. ',
-      boldPhrase: 'Every extra tap is a missed reading. Every missed reading is a clinical risk.',
-      introTail: ' Every confused patient is one who stops using it.',
-    },
-    scene: [
-      { value: '1', label: 'Designer (sole)' },
-      { value: '1', label: 'PM' },
-      { value: '5+', label: 'Engineers' },
-      { value: '100+', label: 'Sprints' },
-    ],
-    beat3: {
-      title: '03 · FIVE TABS, ONE GOAL',
-      intro: 'The bottom navigation is the entire product. If it does not work, nothing else matters.',
-      type: 'five-tabs',
-      cards: [
-        { title: 'Today', body: 'What needs doing right now' },
-        { title: 'Vitals', body: 'Record and review measurements' },
-        { title: 'Medication', body: 'What to take, when' },
-        { title: 'Activity', body: 'What you completed today' },
-        { title: 'Settings', body: 'Devices, preferences, support' },
-      ],
-    },
-    beat4: {
-      title: '04 · THE TODAY SCREEN',
-      intro: 'When a patient opens the app, they see one thing first: what they need to do today, in plain language, with their device status confirming everything is ready.',
-      type: 'today',
-      quote: '"By 11 AM, record your blood pressure. Your wearable is 100% charged. Your BP cuff is ready."',
-      quoteBody: 'Not a calendar. Not a list of metrics. Not a wall of charts. Just the next task, the device they need, and the time. Recognition, not recall.',
-    },
-    painpoints: [
-      { eyebrow: 'PATIENTS', text: 'Cognitive overload from too many options' },
-      { eyebrow: 'DEVICES', text: 'Pairing felt as complex as setting up a new phone' },
-      { eyebrow: 'DATA', text: 'Missed readings meant clinicians lost visibility' },
-    ],
-    beat6: {
-      existing: {
-        items: ['Open app to a complex dashboard', 'Hunt for "record BP" button', 'Pair device manually each time', 'Navigate through three screens', 'Submit and confirm', 'Total time: 8-10 minutes'],
-        tagline: 'Friction. Frustration. Patients give up.',
-      },
-      future: {
-        items: ["Open app, see today's task", 'Tap "Record BP"', 'Device auto pairs (already known)', 'Reading captured automatically', 'Confirm with one tap', 'Total time: 2 minutes'],
-        tagline: 'Easy. Habitual. Patients return daily.',
-      },
-    },
-    explorations: [
-      { status: 'rejected', title: 'Calendar grid view', body: 'Showed everything at once. Felt clinical and overwhelming. Elderly patients felt judged by what they had not yet done.' },
-      { status: 'rejected', title: 'Long checklist', body: 'Too many items visible. Patients lost focus. The next thing they needed to do was buried.' },
-      { status: 'shipped', title: 'One task card at a time', body: 'Always shows the single next thing to do. Plain language. Time stamped. Device status confirmed. No friction.', image: '/images/patient-app/01-home-today.png' },
-    ],
-    tradeoff: 'Power users who liked seeing the whole week at a glance lost the calendar view by default. It is still available behind a setting, but the home screen now shows only the next task. The 80% of patients who were overwhelmed mattered more than the 20% who were confident.',
-    unlocked: {
-      body: 'Patients stopped abandoning the app in week two. Recording vitals became a 2 minute habit, not a 10 minute chore. Clinicians stopped chasing missing readings. The app became part of the daily routine, not another thing to manage.',
-      sub: 'The simplest part of the platform. The most important.',
-      image: { src: '/images/patient-app/01-home-today.png', caption: "Today's task — the heart of the patient experience" },
-    },
-    prototypeUrl: 'https://designer-dashboard.aruntscaria.com',
-  },
-  {
-    chapter: '02',
+    platformKey: 'web',
     name: 'Web Dashboard',
     subtitle: 'Where nurses see the complete patient picture, so no deterioration goes unnoticed',
     beats: {
@@ -289,6 +224,8 @@ const stories: Story[] = [
       boldPhrase: 'Nurses needed to spot deterioration before it became an emergency.',
       introTail: ' Missing a single signal could mean missing a life threatening event.',
     },
+    beat1Image: { src: '/images/web-dashboard/02-billable-hours.png', caption: 'Billable hours — operational visibility for clinical teams' },
+    beat8Image: { src: '/images/web-dashboard/01-care-logs.png', caption: 'Care logs — the nurse\'s daily window into every patient' },
     scene: [
       { value: '2', label: 'Designers' },
       { value: '1', label: 'PM' },
@@ -345,7 +282,75 @@ const stories: Story[] = [
     prototypeUrl: 'https://designer-dashboard.aruntscaria.com',
   },
   {
+    chapter: '02',
+    platformKey: 'mobile',
+    name: 'Patient App',
+    subtitle: 'Daily care for people who are unwell, without overwhelming them',
+    beats: {
+      quote: '"If recording vitals takes ten minutes, elderly patients give up. We need it to take two."',
+      intro: 'Care@Home is remote care. Patients are at home, not in hospital. They are often elderly, often managing multiple chronic conditions. The app cannot ask too much. ',
+      boldPhrase: 'Every extra tap is a missed reading. Every missed reading is a clinical risk.',
+      introTail: ' Every confused patient is one who stops using it.',
+    },
+    beat1Image: { src: '/images/patient-app/02-medication.png', caption: 'Medication — clear, scannable, no decisions required' },
+    beat8Image: { src: '/images/patient-app/03-activity-log.png', caption: 'Activity log — quiet confirmation of what was done' },
+    scene: [
+      { value: '1', label: 'Designer (sole)' },
+      { value: '1', label: 'PM' },
+      { value: '5+', label: 'Engineers' },
+      { value: '100+', label: 'Sprints' },
+    ],
+    beat3: {
+      title: '03 · FIVE TABS, ONE GOAL',
+      intro: 'The bottom navigation is the entire product. If it does not work, nothing else matters.',
+      type: 'five-tabs',
+      cards: [
+        { title: 'Today', body: 'What needs doing right now' },
+        { title: 'Vitals', body: 'Record and review measurements' },
+        { title: 'Medication', body: 'What to take, when' },
+        { title: 'Activity', body: 'What you completed today' },
+        { title: 'Settings', body: 'Devices, preferences, support' },
+      ],
+    },
+    beat4: {
+      title: '04 · THE TODAY SCREEN',
+      intro: 'When a patient opens the app, they see one thing first: what they need to do today, in plain language, with their device status confirming everything is ready.',
+      type: 'today',
+      quote: '"By 11 AM, record your blood pressure. Your wearable is 100% charged. Your BP cuff is ready."',
+      quoteBody: 'Not a calendar. Not a list of metrics. Not a wall of charts. Just the next task, the device they need, and the time. Recognition, not recall.',
+      sideImage: { src: '/images/patient-app/04-reminders.png', caption: 'Reminders that nudge, not shout' },
+    },
+    painpoints: [
+      { eyebrow: 'PATIENTS', text: 'Cognitive overload from too many options' },
+      { eyebrow: 'DEVICES', text: 'Pairing felt as complex as setting up a new phone' },
+      { eyebrow: 'DATA', text: 'Missed readings meant clinicians lost visibility' },
+    ],
+    beat6: {
+      existing: {
+        items: ['Open app to a complex dashboard', 'Hunt for "record BP" button', 'Pair device manually each time', 'Navigate through three screens', 'Submit and confirm', 'Total time: 8-10 minutes'],
+        tagline: 'Friction. Frustration. Patients give up.',
+      },
+      future: {
+        items: ["Open app, see today's task", 'Tap "Record BP"', 'Device auto pairs (already known)', 'Reading captured automatically', 'Confirm with one tap', 'Total time: 2 minutes'],
+        tagline: 'Easy. Habitual. Patients return daily.',
+      },
+    },
+    explorations: [
+      { status: 'rejected', title: 'Calendar grid view', body: 'Showed everything at once. Felt clinical and overwhelming. Elderly patients felt judged by what they had not yet done.' },
+      { status: 'rejected', title: 'Long checklist', body: 'Too many items visible. Patients lost focus. The next thing they needed to do was buried.' },
+      { status: 'shipped', title: 'One task card at a time', body: 'Always shows the single next thing to do. Plain language. Time stamped. Device status confirmed. No friction.', image: '/images/patient-app/01-home-today.png' },
+    ],
+    tradeoff: 'Power users who liked seeing the whole week at a glance lost the calendar view by default. It is still available behind a setting, but the home screen now shows only the next task. The 80% of patients who were overwhelmed mattered more than the 20% who were confident.',
+    unlocked: {
+      body: 'Patients stopped abandoning the app in week two. Recording vitals became a 2 minute habit, not a 10 minute chore. Clinicians stopped chasing missing readings. The app became part of the daily routine, not another thing to manage.',
+      sub: 'The simplest part of the platform. The most important.',
+      image: { src: '/images/patient-app/01-home-today.png', caption: "Today's task — the heart of the patient experience" },
+    },
+    prototypeUrl: 'https://designer-dashboard.aruntscaria.com',
+  },
+  {
     chapter: '03',
+    platformKey: 'designer',
     name: 'Designer Dashboard',
     subtitle: 'One configuration tool. Three downstream products. Programs running across geographies and languages.',
     beats: {
@@ -395,6 +400,8 @@ const stories: Story[] = [
       { status: 'rejected', title: 'Side by side editor with live preview', body: 'The preview pulled attention away from the configuration. Admins watched the preview instead of focusing on the work.' },
       { status: 'shipped', title: 'Nested categories, preview on demand', body: 'Drill into one category at a time. Switch tabs to preview each downstream product.', image: '/images/designer-dashboard/02-vitals-monitoring.png' },
     ],
+    beat1Image: { src: '/images/designer-dashboard/01-program-creation.png', caption: 'Program creation: Mayo_Singapore + Novartis' },
+    beat8Image: { src: '/images/designer-dashboard/07-program-features.png', caption: 'Program features — every toggle a deliberate exposure of depth' },
     tradeoff: 'The dashboard exposes a lot. Every vital, every schedule, every language, every rule. Admins can configure it all, but it requires training. This is not a tool a nurse picks up in five minutes. A deliberate choice. Depth for the people who run the platform, simplicity for the people downstream.',
     unlocked: {
       body: 'Hospital onboarding stopped going through the engineering queue. Admins built and updated their own programs. The same platform now serves heart failure in Singapore, COPD elsewhere, and a dozen other protocols, without a custom build for each.',
@@ -406,10 +413,17 @@ const stories: Story[] = [
 ]
 
 function StoryBeat({ eyebrow, children, className = '' }: { eyebrow: string; children: React.ReactNode; className?: string }) {
+  // Split "01 · How it started" into number and label for typographic treatment
+  const [num, ...rest] = eyebrow.split(/\s*[·•—]\s*/)
+  const label = rest.join(' · ')
   return (
     <ScrollAnimation>
-      <div className={`mb-12 md:mb-16 ${className}`}>
-        <p className="text-[11px] tracking-[0.18em] uppercase text-orange-400/70 font-semibold mb-4">{eyebrow}</p>
+      <div className={`mb-14 md:mb-20 ${className}`}>
+        <div className="flex items-baseline gap-4 mb-6">
+          <span className="font-mono text-orange-400/90 text-sm tracking-wider">{num}</span>
+          <span className="h-px flex-1 bg-gradient-to-r from-orange-500/40 via-orange-500/15 to-transparent max-w-[120px]" />
+          <span className="font-mono text-[11px] tracking-[0.25em] uppercase text-orange-300/90">{label || eyebrow}</span>
+        </div>
         {children}
       </div>
     </ScrollAnimation>
@@ -419,52 +433,62 @@ function StoryBeat({ eyebrow, children, className = '' }: { eyebrow: string; chi
 function StoryFigure({ src, caption, alt }: { src: string; caption?: string; alt: string }) {
   return (
     <figure className="m-0">
-      <div className="rounded-2xl overflow-hidden border border-white/10 bg-zinc-950">
+      <div className="rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 shadow-2xl shadow-black/40">
         <Image src={src} alt={alt} width={1600} height={1000} className="w-full h-auto" />
       </div>
-      {caption && <figcaption className="text-xs text-gray-500 mt-3 text-center italic">{caption}</figcaption>}
+      {caption && <figcaption className="font-mono text-[11px] tracking-wider text-gray-400 mt-3 pl-1">{caption}</figcaption>}
     </figure>
   )
 }
 
-function UXStorySection({ story }: { story: Story }) {
+function UXStorySection({ story }: { story: StoryWithKey }) {
   return (
     <article className="relative py-20 md:py-28 border-b border-white/5 last:border-b-0">
-      {/* Story header */}
+      {/* Story header — editorial chapter opener */}
       <ScrollAnimation>
-        <div className="mb-14 md:mb-20 max-w-4xl">
-          <p className="text-[11px] tracking-[0.3em] uppercase text-orange-400 font-semibold mb-3">
-            The UX Story · Chapter {story.chapter}
-          </p>
-          <h3 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-5 leading-[1.05]">
-            {story.name}
-          </h3>
-          <p className="text-lg md:text-xl text-gray-400 leading-relaxed font-light max-w-3xl">
-            {story.subtitle}
-          </p>
+        <div className="mb-16 md:mb-24">
+          <div className="font-mono text-[11px] tracking-[0.3em] uppercase text-orange-400 mb-8 flex items-center gap-3">
+            <span className="w-8 h-px bg-orange-400" />
+            <span>The UX Story · Chapter {story.chapter}</span>
+          </div>
+          <div className="grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-start">
+            {/* Giant chapter number as design element */}
+            <div className="font-serif-display italic text-orange-500/85 leading-none select-none" style={{ fontSize: 'clamp(7rem, 18vw, 16rem)' }}>
+              {story.chapter}
+            </div>
+            <div className="md:pt-6">
+              <h3 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.02] tracking-tight">
+                {story.name}
+              </h3>
+              <p className="font-serif-display italic text-gray-200 leading-[1.4] max-w-3xl" style={{ fontSize: 'clamp(1.25rem, 2.5vw, 1.875rem)' }}>
+                {story.subtitle}
+              </p>
+            </div>
+          </div>
         </div>
       </ScrollAnimation>
 
       {/* Beat 1 — How it started */}
       <StoryBeat eyebrow="01 · How it started">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-10 items-start">
-          <div>
-            <div className="bg-gradient-to-br from-orange-500/[0.08] to-amber-500/[0.04] border-l-4 border-orange-500/60 px-6 py-5 rounded-r-xl mb-5">
-              <p className="font-serif text-lg md:text-xl text-orange-100/95 leading-relaxed italic" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
+        <div className="grid md:grid-cols-2 gap-10 md:gap-14 items-start">
+          <div className="space-y-8">
+            {/* Pull quote — no box, just the words */}
+            <blockquote className="relative pl-6 border-l-2 border-orange-500/70">
+              <p className="font-serif-display italic text-white leading-[1.3]" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)' }}>
                 {story.beats.quote}
               </p>
-            </div>
-            <p className="text-gray-300 text-[15px] md:text-base leading-[1.75]">
+            </blockquote>
+            <p className="text-gray-100 text-base md:text-lg leading-[1.8]">
               {story.beats.intro}
-              {story.beats.boldPhrase && <span className="text-white font-semibold">{story.beats.boldPhrase}</span>}
+              {story.beats.boldPhrase && <span className="text-white font-semibold underline decoration-orange-500/60 decoration-2 underline-offset-4">{story.beats.boldPhrase}</span>}
               {story.beats.introTail}
             </p>
           </div>
-          {story.chapter === '03' && (
+          {story.beat1Image && (
             <StoryFigure
-              src="/images/designer-dashboard/01-program-creation.png"
-              caption="Program creation: Mayo_Singapore + Novartis"
-              alt="Program creation screen showing Mayo_Singapore program with Novartis as partner"
+              src={story.beat1Image.src}
+              caption={story.beat1Image.caption}
+              alt={story.beat1Image.caption}
             />
           )}
         </div>
@@ -474,9 +498,9 @@ function UXStorySection({ story }: { story: Story }) {
       <StoryBeat eyebrow="02 · Setting the scene">
         <div className={`grid grid-cols-2 ${story.scene.length === 5 ? 'md:grid-cols-5' : 'md:grid-cols-4'} gap-3 md:gap-4`}>
           {story.scene.map((stat) => (
-            <div key={stat.label} className="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-6 text-center hover:border-orange-500/30 transition-colors duration-300">
+            <div key={stat.label} className="bg-zinc-900/80 border border-white/15 rounded-2xl px-4 py-6 text-center hover:border-orange-500/40 hover:bg-zinc-900 transition-colors duration-300">
               <p className="text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</p>
-              <p className="text-[11px] tracking-wider uppercase text-gray-500">{stat.label}</p>
+              <p className="text-[11px] tracking-wider uppercase text-gray-300">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -484,7 +508,7 @@ function UXStorySection({ story }: { story: Story }) {
 
       {/* Beat 3 — varies per story */}
       <StoryBeat eyebrow={story.beat3.title}>
-        <p className="text-gray-300 text-[15px] md:text-base leading-[1.75] mb-7 max-w-3xl">{story.beat3.intro}</p>
+        <p className="text-gray-200 text-base md:text-lg leading-[1.8] mb-7 max-w-3xl">{story.beat3.intro}</p>
         {story.beat3.type === 'downstream' && story.beat3.image1 && story.beat3.image2 && (
           <div className="grid md:grid-cols-2 gap-6">
             <StoryFigure src={story.beat3.image1.src} caption={story.beat3.image1.caption} alt={story.beat3.image1.caption} />
@@ -494,9 +518,9 @@ function UXStorySection({ story }: { story: Story }) {
         {story.beat3.type === 'five-tabs' && story.beat3.cards && (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {story.beat3.cards.map((c) => (
-              <div key={c.title} className="bg-white/[0.03] border border-white/10 rounded-xl px-4 py-5 hover:border-orange-500/30 transition-colors">
+              <div key={c.title} className="bg-zinc-900/80 border border-white/15 rounded-xl px-4 py-5 hover:border-orange-500/40 hover:bg-zinc-900 transition-colors">
                 <h4 className="text-white font-semibold text-sm mb-1.5">{c.title}</h4>
-                <p className="text-gray-500 text-xs leading-relaxed">{c.body}</p>
+                <p className="text-gray-300 text-xs leading-relaxed">{c.body}</p>
               </div>
             ))}
           </div>
@@ -504,9 +528,9 @@ function UXStorySection({ story }: { story: Story }) {
         {story.beat3.type === 'patient-view' && story.beat3.cards && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {story.beat3.cards.map((c) => (
-              <div key={c.title} className="bg-white/[0.03] border border-white/10 rounded-xl p-5 hover:border-orange-500/30 transition-colors">
+              <div key={c.title} className="bg-zinc-900/80 border border-white/15 rounded-xl p-5 hover:border-orange-500/40 hover:bg-zinc-900 transition-colors">
                 <h4 className="text-white font-semibold text-base mb-2">{c.title}</h4>
-                <p className="text-gray-400 text-sm leading-relaxed">{c.body}</p>
+                <p className="text-gray-300 text-sm leading-relaxed">{c.body}</p>
               </div>
             ))}
           </div>
@@ -515,30 +539,72 @@ function UXStorySection({ story }: { story: Story }) {
 
       {/* Beat 4 — varies per story */}
       <StoryBeat eyebrow={story.beat4.title}>
-        <p className="text-gray-300 text-[15px] md:text-base leading-[1.75] mb-7 max-w-3xl">{story.beat4.intro}</p>
+        <p className="text-gray-200 text-base md:text-lg leading-[1.8] mb-7 max-w-3xl">{story.beat4.intro}</p>
         {story.beat4.type === 'depth' && story.beat4.image1 && story.beat4.image2 && (
-          <div className="grid md:grid-cols-2 gap-6">
-            <StoryFigure src={story.beat4.image1.src} caption={story.beat4.image1.caption} alt={story.beat4.image1.caption} />
+          <div className="grid md:grid-cols-2 gap-6 items-start">
+            <div className="space-y-6">
+              <StoryFigure src={story.beat4.image1.src} caption={story.beat4.image1.caption} alt={story.beat4.image1.caption} />
+              {/* Stack of decisions — literal hierarchy illustrating the depth */}
+              <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/15 rounded-2xl p-5 md:p-6">
+                <p className="text-[10px] tracking-[0.25em] uppercase text-orange-400 font-semibold mb-4">A STACK OF DECISIONS</p>
+                <ol className="space-y-2">
+                  {[
+                    { label: 'Care path', depth: 0 },
+                    { label: 'Vital monitoring', depth: 1 },
+                    { label: 'BP measurement', depth: 2 },
+                    { label: 'Schedule 1', depth: 3 },
+                    { label: 'Frequency: Day / Week', depth: 4 },
+                    { label: 'Session start & end time', depth: 5 },
+                    { label: 'Repeat pattern', depth: 6 },
+                  ].map((row, i) => (
+                    <li
+                      key={i}
+                      className="flex items-center gap-3 text-[13px] md:text-sm leading-snug"
+                      style={{ paddingLeft: `${row.depth * 14}px` }}
+                    >
+                      <span className="font-mono text-[10px] text-orange-400/60 w-4 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                      {row.depth > 0 && (
+                        <span className="text-orange-500/40 font-mono text-xs select-none" aria-hidden>└─</span>
+                      )}
+                      <span className={row.depth === 0 ? 'text-white font-semibold' : 'text-gray-200'}>{row.label}</span>
+                    </li>
+                  ))}
+                </ol>
+                <p className="text-gray-400 text-xs italic mt-4 leading-relaxed border-t border-white/10 pt-3">
+                  Seven levels deep, for one vital, in one care path. Every program is hundreds of these decisions, structured.
+                </p>
+              </div>
+            </div>
             <StoryFigure src={story.beat4.image2.src} caption={story.beat4.image2.caption} alt={story.beat4.image2.caption} />
           </div>
         )}
         {story.beat4.type === 'today' && story.beat4.quote && (
-          <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-950 border border-white/10 rounded-2xl p-6 md:p-8 max-w-3xl">
-            <p className="font-serif text-lg md:text-xl text-orange-100/90 italic leading-relaxed mb-4" style={{ fontFamily: 'Georgia, serif' }}>
-              {story.beat4.quote}
-            </p>
-            <p className="text-gray-400 text-sm md:text-base leading-relaxed">{story.beat4.quoteBody}</p>
+          <div className="grid md:grid-cols-2 gap-10 md:gap-14 items-center">
+            <div className="space-y-6">
+              <blockquote className="relative pl-6 border-l-2 border-orange-500/70">
+                <p className="font-serif-display italic text-white leading-[1.3]" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)' }}>
+                  {story.beat4.quote}
+                </p>
+              </blockquote>
+              <p className="text-gray-100 text-base md:text-lg leading-[1.8]">{story.beat4.quoteBody}</p>
+            </div>
+            {story.beat4.sideImage && (
+              <StoryFigure src={story.beat4.sideImage.src} caption={story.beat4.sideImage.caption} alt={story.beat4.sideImage.caption} />
+            )}
           </div>
         )}
       </StoryBeat>
 
-      {/* Beat 5 — Key painpoints */}
+      {/* Beat 5 — Key painpoints (editorial, no boxes) */}
       <StoryBeat eyebrow="05 · Key painpoints">
-        <div className="grid md:grid-cols-3 gap-5 md:gap-6">
-          {story.painpoints.map((p) => (
-            <div key={p.eyebrow}>
-              <p className="text-[10px] tracking-[0.2em] uppercase text-gray-500 mb-2 font-semibold">{p.eyebrow}</p>
-              <p className="text-white text-lg md:text-xl font-medium leading-snug">{p.text}</p>
+        <div className="grid md:grid-cols-3 gap-8 md:gap-12 divide-y md:divide-y-0 md:divide-x divide-white/10">
+          {story.painpoints.map((p, i) => (
+            <div key={p.eyebrow} className="pt-6 md:pt-0 md:px-8 first:md:pl-0">
+              <div className="flex items-baseline gap-3 mb-4">
+                <span className="font-serif-display italic text-orange-500/80 leading-none" style={{ fontSize: '3rem' }}>{String(i + 1).padStart(2, '0')}</span>
+                <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-gray-400">{p.eyebrow}</span>
+              </div>
+              <p className="text-white text-xl md:text-2xl font-medium leading-[1.3]">{p.text}</p>
             </div>
           ))}
         </div>
@@ -547,58 +613,58 @@ function UXStorySection({ story }: { story: Story }) {
       {/* Beat 6 — Existing vs Future */}
       <StoryBeat eyebrow="06 · Existing vs Desirable Future">
         <div className="grid md:grid-cols-2 gap-5">
-          <div className="bg-white/[0.02] border border-red-900/30 rounded-2xl p-6">
-            <p className="text-[10px] tracking-[0.2em] uppercase text-red-400/70 mb-4 font-semibold">EXISTING</p>
+          <div className="bg-zinc-900/70 border border-red-500/30 rounded-2xl p-6">
+            <p className="text-[10px] tracking-[0.2em] uppercase text-red-300 mb-4 font-semibold">EXISTING</p>
             <ol className="space-y-2.5 mb-5">
               {story.beat6.existing.items.map((it, i) => (
-                <li key={i} className="text-gray-300 text-[14px] leading-relaxed flex gap-3">
-                  <span className="text-red-400/60 font-mono text-xs pt-0.5">{String(i + 1).padStart(2, '0')}</span>
+                <li key={i} className="text-gray-200 text-[15px] leading-relaxed flex gap-3">
+                  <span className="text-red-400 font-mono text-xs pt-1">{String(i + 1).padStart(2, '0')}</span>
                   <span>{it}</span>
                 </li>
               ))}
             </ol>
-            <p className="text-red-400 text-sm font-medium border-t border-red-900/30 pt-4">{story.beat6.existing.tagline}</p>
+            <p className="text-red-300 text-sm font-semibold border-t border-red-500/30 pt-4">{story.beat6.existing.tagline}</p>
           </div>
-          <div className="bg-white/[0.02] border border-emerald-900/30 rounded-2xl p-6">
-            <p className="text-[10px] tracking-[0.2em] uppercase text-emerald-400/70 mb-4 font-semibold">DESIRABLE FUTURE</p>
+          <div className="bg-zinc-900/70 border border-emerald-500/30 rounded-2xl p-6">
+            <p className="text-[10px] tracking-[0.2em] uppercase text-emerald-300 mb-4 font-semibold">DESIRABLE FUTURE</p>
             <ol className="space-y-2.5 mb-5">
               {story.beat6.future.items.map((it, i) => (
-                <li key={i} className="text-gray-300 text-[14px] leading-relaxed flex gap-3">
-                  <span className="text-emerald-400/60 font-mono text-xs pt-0.5">{String(i + 1).padStart(2, '0')}</span>
+                <li key={i} className="text-gray-200 text-[15px] leading-relaxed flex gap-3">
+                  <span className="text-emerald-400 font-mono text-xs pt-1">{String(i + 1).padStart(2, '0')}</span>
                   <span>{it}</span>
                 </li>
               ))}
             </ol>
-            <p className="text-emerald-400 text-sm font-medium border-t border-emerald-900/30 pt-4">{story.beat6.future.tagline}</p>
+            <p className="text-emerald-300 text-sm font-semibold border-t border-emerald-500/30 pt-4">{story.beat6.future.tagline}</p>
           </div>
         </div>
       </StoryBeat>
 
       {/* Beat 7 — Designing (3 explorations) */}
       <StoryBeat eyebrow="07 · Designing">
-        <p className="text-gray-300 text-[15px] md:text-base leading-[1.75] mb-7 max-w-3xl">Three explorations.</p>
+        <p className="text-gray-200 text-base md:text-lg leading-[1.8] mb-7 max-w-3xl">Three explorations.</p>
         <div className="grid md:grid-cols-3 gap-4">
           {story.explorations.map((e, i) => (
             <div
               key={i}
               className={`relative rounded-2xl p-6 flex flex-col ${
                 e.status === 'shipped'
-                  ? 'bg-gradient-to-br from-emerald-950/40 to-zinc-950 border-2 border-emerald-500/40 shadow-lg shadow-emerald-500/5'
-                  : 'bg-white/[0.02] border border-white/10'
+                  ? 'bg-gradient-to-br from-emerald-950/60 to-zinc-900 border-2 border-emerald-500/50 shadow-lg shadow-emerald-500/10'
+                  : 'bg-zinc-900/70 border border-white/15'
               }`}
             >
-              <p className={`text-[10px] tracking-[0.25em] uppercase font-bold mb-3 ${e.status === 'shipped' ? 'text-emerald-400' : 'text-red-400/80'}`}>
+              <p className={`text-[10px] tracking-[0.25em] uppercase font-bold mb-3 ${e.status === 'shipped' ? 'text-emerald-300' : 'text-red-300'}`}>
                 {e.status === 'shipped' ? 'SHIPPED' : 'REJECTED'}
               </p>
               <h4 className="text-white text-lg font-semibold mb-2.5 leading-tight">{e.title}</h4>
-              <p className="text-gray-400 text-sm leading-relaxed mb-4">{e.body}</p>
+              <p className="text-gray-300 text-sm leading-relaxed mb-4">{e.body}</p>
               {e.status === 'shipped' && e.image ? (
-                <div className="mt-auto rounded-lg overflow-hidden border border-emerald-500/20">
+                <div className="mt-auto rounded-lg overflow-hidden border border-emerald-500/30">
                   <Image src={e.image} alt={`${e.title} — shipped solution`} width={1200} height={800} className="w-full h-auto" />
                 </div>
               ) : (
-                <div className="mt-auto py-3 px-4 bg-white/[0.02] border border-white/5 rounded-lg text-center">
-                  <p className="text-gray-600 text-xs italic">No screen archived</p>
+                <div className="mt-auto py-3 px-4 bg-zinc-800/60 border border-white/10 rounded-lg text-center">
+                  <p className="text-gray-400 text-xs italic">No screen archived</p>
                 </div>
               )}
             </div>
@@ -608,17 +674,22 @@ function UXStorySection({ story }: { story: Story }) {
 
       {/* Beat 8 — Trade off */}
       <StoryBeat eyebrow="08 · The trade-off">
-        <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/10 rounded-2xl p-6 md:p-8 max-w-4xl">
-          <p className="text-gray-200 text-[15px] md:text-base leading-[1.85]">{story.tradeoff}</p>
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/15 rounded-2xl p-6 md:p-8">
+            <p className="text-gray-100 text-base md:text-lg leading-[1.85]">{story.tradeoff}</p>
+          </div>
+          {story.beat8Image && (
+            <StoryFigure src={story.beat8Image.src} caption={story.beat8Image.caption} alt={story.beat8Image.caption} />
+          )}
         </div>
       </StoryBeat>
 
       {/* Beat 9 — What it unlocked */}
       <StoryBeat eyebrow="09 · What it unlocked" className="mb-0">
         <div className="grid md:grid-cols-2 gap-8 items-start">
-          <div className="bg-gradient-to-br from-orange-500/[0.08] to-amber-500/[0.03] border border-orange-500/20 rounded-2xl p-6 md:p-8">
-            <p className="text-gray-100 text-base md:text-lg leading-[1.7] mb-5">{story.unlocked.body}</p>
-            <p className="text-orange-300/80 text-sm italic mb-6">{story.unlocked.sub}</p>
+          <div className="bg-gradient-to-br from-orange-500/15 to-amber-500/5 border border-orange-500/40 rounded-2xl p-6 md:p-8">
+            <p className="text-white text-base md:text-lg leading-[1.7] mb-5">{story.unlocked.body}</p>
+            <p className="text-orange-200 text-sm md:text-base italic mb-6">{story.unlocked.sub}</p>
             <a
               href={story.prototypeUrl}
               target="_blank"
@@ -1134,48 +1205,53 @@ export default function CareAtHome() {
         </div>
       </section>
 
-      {/* Three Platforms — Big Inline Videos */}
+      {/* Three Products — story + live prototype per chapter */}
       <section className="relative z-10 py-24 md:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <ScrollAnimation>
-            <div className="text-center mb-16 md:mb-24">
-              <p className="text-orange-400 text-xs tracking-[0.3em] uppercase mb-4">The Ecosystem</p>
-              <h2 className="text-4xl md:text-6xl font-bold mb-6">Three Products. One Mission.</h2>
-              <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
-                Each prototype plays live below — real flows, real interactions, the full experience.
+            <div className="text-center mb-20 md:mb-32">
+              <div className="font-mono text-[11px] tracking-[0.3em] uppercase text-orange-400 mb-6 inline-flex items-center gap-3">
+                <span className="w-8 h-px bg-orange-400" />
+                <span>The Ecosystem</span>
+                <span className="w-8 h-px bg-orange-400" />
+              </div>
+              <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[0.95] tracking-tight">
+                Three <span className="font-serif-display italic font-normal text-orange-400">Products.</span><br />
+                One <span className="font-serif-display italic font-normal text-orange-400">Mission.</span>
+              </h2>
+              <p className="font-serif-display italic text-gray-200 max-w-2xl mx-auto leading-[1.5]" style={{ fontSize: 'clamp(1.125rem, 2vw, 1.5rem)' }}>
+                For each product: the story behind the pixels, then the live prototype.
               </p>
             </div>
           </ScrollAnimation>
 
-          <div className="space-y-24 md:space-y-32">
-            {(Object.keys(platforms) as PlatformKey[]).map((key, i) => (
-              <PlatformSection key={key} platformKey={key} index={i} />
+          <div className="space-y-32 md:space-y-44">
+            {stories.map((story, i) => (
+              <div key={story.chapter}>
+                {/* 1. Platform intro */}
+                <PlatformIntro platformKey={story.platformKey} index={i} />
+
+                {/* 2. The UX story (9 beats) */}
+                <div className="mt-12 md:mt-16 max-w-6xl mx-auto">
+                  <UXStorySection story={story} />
+                </div>
+
+                {/* 3. Live prototype video — the finale */}
+                <div className="mt-16 md:mt-24">
+                  <ScrollAnimation>
+                    <div className="mb-8 md:mb-10 flex items-baseline gap-4">
+                      <span className="font-mono text-[11px] tracking-[0.25em] uppercase text-orange-300/90">10 · The Live Prototype</span>
+                      <span className="h-px flex-1 bg-gradient-to-r from-orange-500/40 via-orange-500/10 to-transparent max-w-[180px]" />
+                    </div>
+                    <h4 className="font-serif-display italic text-white leading-[1.2] mb-8" style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)' }}>
+                      Watch the shipped product in action.
+                    </h4>
+                  </ScrollAnimation>
+                  <PlatformVideo platformKey={story.platformKey} />
+                </div>
+              </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* The UX Stories — three real case studies */}
-      <section className="relative z-10 py-24 md:py-36 px-6 bg-gradient-to-b from-transparent via-zinc-950/40 to-transparent">
-        <div className="max-w-6xl mx-auto">
-          <ScrollAnimation>
-            <div className="text-center mb-20 md:mb-28">
-              <p className="text-orange-400 text-xs tracking-[0.3em] uppercase mb-4">The Story Behind the Pixels</p>
-              <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white leading-[0.95]">
-                The UX{' '}
-                <span className="bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-400 bg-clip-text text-transparent">
-                  Stories
-                </span>
-              </h2>
-              <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-                Three connected products. Three different tensions. The decisions, the rejected explorations, and what shipped — told the way it actually happened.
-              </p>
-            </div>
-          </ScrollAnimation>
-
-          {stories.map((story) => (
-            <UXStorySection key={story.chapter} story={story} />
-          ))}
         </div>
       </section>
 
