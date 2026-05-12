@@ -1,9 +1,100 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, animate } from 'framer-motion'
+import { useState, useEffect, useRef, createContext, useContext, useCallback } from 'react'
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useInView, useMotionValue, animate } from 'framer-motion'
 import ScrollAnimation from '../components/ScrollAnimation'
+
+type LightboxImage = { src: string; alt: string }
+const LightboxContext = createContext<{ open: (img: LightboxImage) => void }>({ open: () => {} })
+const useLightbox = () => useContext(LightboxContext)
+
+function LightboxProvider({ children }: { children: React.ReactNode }) {
+  const [current, setCurrent] = useState<LightboxImage | null>(null)
+  const open = useCallback((img: LightboxImage) => setCurrent(img), [])
+  const close = useCallback(() => setCurrent(null), [])
+
+  useEffect(() => {
+    if (!current) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close() }
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [current, close])
+
+  return (
+    <LightboxContext.Provider value={{ open }}>
+      {children}
+      <AnimatePresence>
+        {current && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={close}
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 md:p-10 cursor-zoom-out"
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); close() }}
+              aria-label="Close fullscreen"
+              className="absolute top-5 right-5 z-10 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:border-orange-500/60 transition-all backdrop-blur-md cursor-pointer"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="absolute top-5 left-5 font-mono text-[10px] tracking-[0.3em] uppercase text-gray-400 pointer-events-none">
+              ESC or click to close
+            </div>
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 240, damping: 24 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative cursor-default flex items-center justify-center"
+              style={{ width: '95vw', height: '92vh' }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={current.src}
+                alt={current.alt}
+                className="rounded-xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] border border-white/10"
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </LightboxContext.Provider>
+  )
+}
+
+function ZoomableImage({ src, alt, width, height, className, wrapperClassName }: { src: string; alt: string; width: number; height: number; className?: string; wrapperClassName?: string }) {
+  const { open } = useLightbox()
+  return (
+    <button
+      type="button"
+      onClick={() => open({ src, alt })}
+      aria-label={`View ${alt} fullscreen`}
+      className={`group relative block w-full p-0 m-0 border-0 bg-transparent cursor-zoom-in ${wrapperClassName ?? ''}`}
+    >
+      <Image src={src} alt={alt} width={width} height={height} className={className} />
+      <span className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <span className="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/70 backdrop-blur-md border border-white/20 rounded-full text-white text-[10px] font-mono tracking-wider uppercase">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+          </svg>
+          Zoom
+        </span>
+      </span>
+    </button>
+  )
+}
 
 function Counter({ to, suffix = '', duration = 2 }: { to: number; suffix?: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null)
@@ -198,9 +289,10 @@ type Story = {
     introTail?: string
   }
   beat1Image?: { src: string; caption: string }
+  beat1Stat?: { value: string; label: string; sub?: string }
   scene: { value: string; label: string }[]
   beat3: { title: string; intro: string; type: 'downstream' | 'patient-view' | 'five-tabs'; cards?: { title: string; body: string }[]; image1?: { src: string; caption: string }; image2?: { src: string; caption: string } }
-  beat4: { title: string; intro: string; type: 'depth' | 'today' | 'data-grid'; image1?: { src: string; caption: string }; image2?: { src: string; caption: string }; quote?: string; quoteBody?: string; cards?: { title: string; body: string }[]; sideImage?: { src: string; caption: string } }
+  beat4: { title: string; intro: string; type: 'depth' | 'today' | 'data-grid'; image1?: { src: string; caption: string }; image2?: { src: string; caption: string }; quote?: string; quoteBody?: string; cards?: { title: string; body: string }[]; sideImage?: { src: string; caption: string }; sideImage2?: { src: string; caption: string } }
   beat8Image?: { src: string; caption: string }
   painpoints: { eyebrow: string; text: string }[]
   beat6: { existing: { items: string[]; tagline: string }; future: { items: string[]; tagline: string } }
@@ -224,8 +316,8 @@ const stories: StoryWithKey[] = [
       boldPhrase: 'Nurses needed to spot deterioration before it became an emergency.',
       introTail: ' Missing a single signal could mean missing a life threatening event.',
     },
-    beat1Image: { src: '/images/web-dashboard/02-billable-hours.png', caption: 'Billable hours — operational visibility for clinical teams' },
-    beat8Image: { src: '/images/web-dashboard/01-care-logs.png', caption: 'Care logs — the nurse\'s daily window into every patient' },
+    beat1Image: { src: '/images/web-dashboard/03-patient-list.png', caption: 'Patient list — every patient, every vital, at a glance' },
+    beat8Image: { src: '/images/web-dashboard/07-patient-list-default.png', caption: 'Patient list — what the dashboard opens to now' },
     scene: [
       { value: '2', label: 'Designers' },
       { value: '1', label: 'PM' },
@@ -269,15 +361,15 @@ const stories: StoryWithKey[] = [
       },
     },
     explorations: [
-      { status: 'rejected', title: 'Everything on one screen', body: 'Information dense, but nurses had to scan through noise to find what mattered. Too much cognitive load.' },
-      { status: 'rejected', title: 'Alert centric dashboard', body: 'Showed alerts first, patients second. Nurses lost context. They needed the patient story, not just the alarm.' },
-      { status: 'shipped', title: 'Categorized patient view', body: 'One patient at a time. Information organized by clinical category. Nurses see what they need, when they need it. No noise, no scrolling for the signal.', image: '/images/web-dashboard/01-care-logs.png' },
+      { status: 'rejected', title: 'Everything on one screen', body: 'Information dense, but nurses had to scan through noise to find what mattered. Too much cognitive load.', image: '/images/web-dashboard/04-rejected-one-screen.svg' },
+      { status: 'rejected', title: 'Alert centric dashboard', body: 'Showed alerts first, patients second. Nurses lost context. They needed the patient story, not just the alarm.', image: '/images/web-dashboard/05-rejected-alert-centric.svg' },
+      { status: 'shipped', title: 'Categorized patient view', body: 'One patient at a time. Information organized by clinical category. Nurses see what they need, when they need it. No noise, no scrolling for the signal.', image: '/images/web-dashboard/06-patient-detail-vitals.jpeg' },
     ],
     tradeoff: 'Nurses lost the population overview by default. The dashboard now opens to a patient list, not a vitals heatmap. Power users who liked seeing all 60 patients at once had to switch views. A deliberate choice. The depth of one patient mattered more than the breadth of all of them.',
     unlocked: {
       body: 'Nurses stopped opening five tools to understand one patient. The complete patient story lives in one place. Vitals, medications, evaluations, care logs, patient diary, all visible in context. No data missed. No deterioration unnoticed.',
       sub: '100% care, the way premium clients deserve.',
-      image: { src: '/images/web-dashboard/01-care-logs.png', caption: 'Care logs — the operational nerve center' },
+      image: { src: '/images/web-dashboard/08-patient-diary.jpeg', caption: 'Patient diary — every signal the patient reports, in context' },
     },
     prototypeUrl: 'https://designer-dashboard.aruntscaria.com',
   },
@@ -292,8 +384,9 @@ const stories: StoryWithKey[] = [
       boldPhrase: 'Every extra tap is a missed reading. Every missed reading is a clinical risk.',
       introTail: ' Every confused patient is one who stops using it.',
     },
-    beat1Image: { src: '/images/patient-app/02-medication.png', caption: 'Medication — clear, scannable, no decisions required' },
-    beat8Image: { src: '/images/patient-app/03-activity-log.png', caption: 'Activity log — quiet confirmation of what was done' },
+    beat1Image: { src: '/images/patient-app/05-todays-tasks.jpeg', caption: 'Today\'s tasks — what the patient sees the moment they open the app' },
+    beat1Stat: { value: '2 min', label: 'Target time to record a vital', sub: 'Down from 10 minutes. The threshold between a habit and an abandoned app.' },
+    beat8Image: { src: '/images/patient-app/06-bp-recorded.jpeg', caption: 'A vital recorded — the single next task, done' },
     scene: [
       { value: '1', label: 'Designer (sole)' },
       { value: '1', label: 'PM' },
@@ -318,7 +411,8 @@ const stories: StoryWithKey[] = [
       type: 'today',
       quote: '"By 11 AM, record your blood pressure. Your wearable is 100% charged. Your BP cuff is ready."',
       quoteBody: 'Not a calendar. Not a list of metrics. Not a wall of charts. Just the next task, the device they need, and the time. Recognition, not recall.',
-      sideImage: { src: '/images/patient-app/04-reminders.png', caption: 'Reminders that nudge, not shout' },
+      sideImage: { src: '/images/patient-app/05-todays-tasks.jpeg', caption: "Today's tasks" },
+      sideImage2: { src: '/images/patient-app/06-bp-recorded.jpeg', caption: 'Blood pressure recorded' },
     },
     painpoints: [
       { eyebrow: 'PATIENTS', text: 'Cognitive overload from too many options' },
@@ -336,15 +430,15 @@ const stories: StoryWithKey[] = [
       },
     },
     explorations: [
-      { status: 'rejected', title: 'Calendar grid view', body: 'Showed everything at once. Felt clinical and overwhelming. Elderly patients felt judged by what they had not yet done.' },
-      { status: 'rejected', title: 'Long checklist', body: 'Too many items visible. Patients lost focus. The next thing they needed to do was buried.' },
-      { status: 'shipped', title: 'One task card at a time', body: 'Always shows the single next thing to do. Plain language. Time stamped. Device status confirmed. No friction.', image: '/images/patient-app/01-home-today.png' },
+      { status: 'rejected', title: 'Calendar grid view', body: 'Showed everything at once. Felt clinical and overwhelming. Elderly patients felt judged by what they had not yet done.', image: '/images/patient-app/07-rejected-calendar.svg' },
+      { status: 'rejected', title: 'Long checklist', body: 'Too many items visible. Patients lost focus. The next thing they needed to do was buried.', image: '/images/patient-app/08-rejected-checklist.svg' },
+      { status: 'shipped', title: 'One task card at a time', body: 'Always shows the single next thing to do. Plain language. Time stamped. Device status confirmed. No friction.', image: '/images/patient-app/09-shipped-task-card.jpeg' },
     ],
     tradeoff: 'Power users who liked seeing the whole week at a glance lost the calendar view by default. It is still available behind a setting, but the home screen now shows only the next task. The 80% of patients who were overwhelmed mattered more than the 20% who were confident.',
     unlocked: {
       body: 'Patients stopped abandoning the app in week two. Recording vitals became a 2 minute habit, not a 10 minute chore. Clinicians stopped chasing missing readings. The app became part of the daily routine, not another thing to manage.',
       sub: 'The simplest part of the platform. The most important.',
-      image: { src: '/images/patient-app/01-home-today.png', caption: "Today's task — the heart of the patient experience" },
+      image: { src: '/images/patient-app/06-bp-recorded.jpeg', caption: 'Two minutes. Done. The habit, not the chore.' },
     },
     prototypeUrl: 'https://designer-dashboard.aruntscaria.com',
   },
@@ -430,11 +524,62 @@ function StoryBeat({ eyebrow, children, className = '' }: { eyebrow: string; chi
   )
 }
 
-function StoryFigure({ src, caption, alt }: { src: string; caption?: string; alt: string }) {
+function StoryFigure({ src, caption, alt, device = 'desktop', secondary }: { src: string; caption?: string; alt: string; device?: 'desktop' | 'mobile'; secondary?: { src: string; caption: string } }) {
+  if (device === 'mobile') {
+    const phones = secondary ? [{ src, alt, caption }, { src: secondary.src, alt: secondary.caption, caption: secondary.caption }] : [{ src, alt, caption }];
+    return (
+      <figure className="m-0">
+        <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black shadow-2xl shadow-black/40 flex items-center justify-center py-10 md:py-14 px-4">
+          <div
+            className="absolute inset-0 opacity-[0.05] pointer-events-none"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
+              maskImage: 'radial-gradient(ellipse at center, black 35%, transparent 75%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at center, black 35%, transparent 75%)',
+            }}
+          />
+          <div className="absolute top-6 left-6 font-mono text-[9px] tracking-[0.3em] uppercase text-orange-400/70">iOS · Patient</div>
+          <div className="absolute bottom-6 right-6 font-mono text-[9px] tracking-[0.3em] uppercase text-gray-500">Care@Home</div>
+          <div className="relative flex gap-4 md:gap-6 items-center justify-center w-full">
+            {phones.map((p, i) => (
+              <div
+                key={i}
+                className={`relative rounded-[2.2rem] border-[10px] border-zinc-800 bg-zinc-900 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden ${
+                  phones.length > 1 ? 'max-w-[180px] w-1/2' : 'max-w-[260px] w-full'
+                }`}
+              >
+                <ZoomableImage src={p.src} alt={p.alt} width={400} height={850} className="w-full h-auto block" />
+              </div>
+            ))}
+          </div>
+          {phones.length > 1 && (
+            <svg
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-orange-400/40 pointer-events-none hidden md:block"
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
+          )}
+        </div>
+        {(caption || secondary) && (
+          <figcaption className="font-mono text-[11px] tracking-wider text-gray-400 mt-3 pl-1">
+            {secondary ? `${caption} → ${secondary.caption}` : caption}
+          </figcaption>
+        )}
+      </figure>
+    )
+  }
   return (
     <figure className="m-0">
       <div className="rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 shadow-2xl shadow-black/40">
-        <Image src={src} alt={alt} width={1600} height={1000} className="w-full h-auto" />
+        <ZoomableImage src={src} alt={alt} width={1600} height={1000} className="w-full h-auto" />
       </div>
       {caption && <figcaption className="font-mono text-[11px] tracking-wider text-gray-400 mt-3 pl-1">{caption}</figcaption>}
     </figure>
@@ -483,12 +628,30 @@ function UXStorySection({ story }: { story: StoryWithKey }) {
               {story.beats.boldPhrase && <span className="text-white font-semibold underline decoration-orange-500/60 decoration-2 underline-offset-4">{story.beats.boldPhrase}</span>}
               {story.beats.introTail}
             </p>
+            {story.beat1Stat && (
+              <div className="pt-6 border-t border-white/10">
+                <div className="flex items-baseline gap-4 flex-wrap">
+                  <span className="font-serif-display italic text-orange-400 leading-none" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)' }}>
+                    {story.beat1Stat.value}
+                  </span>
+                  <span className="font-mono text-[11px] tracking-[0.25em] uppercase text-gray-300 max-w-[14rem]">
+                    {story.beat1Stat.label}
+                  </span>
+                </div>
+                {story.beat1Stat.sub && (
+                  <p className="font-serif-display italic text-gray-400 mt-3 leading-relaxed" style={{ fontSize: 'clamp(0.95rem, 1.3vw, 1.05rem)' }}>
+                    {story.beat1Stat.sub}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
           {story.beat1Image && (
             <StoryFigure
               src={story.beat1Image.src}
               caption={story.beat1Image.caption}
               alt={story.beat1Image.caption}
+              device={story.platformKey === 'mobile' ? 'mobile' : 'desktop'}
             />
           )}
         </div>
@@ -589,7 +752,13 @@ function UXStorySection({ story }: { story: StoryWithKey }) {
               <p className="text-gray-100 text-base md:text-lg leading-[1.8]">{story.beat4.quoteBody}</p>
             </div>
             {story.beat4.sideImage && (
-              <StoryFigure src={story.beat4.sideImage.src} caption={story.beat4.sideImage.caption} alt={story.beat4.sideImage.caption} />
+              <StoryFigure
+                src={story.beat4.sideImage.src}
+                caption={story.beat4.sideImage.caption}
+                alt={story.beat4.sideImage.caption}
+                device={story.platformKey === 'mobile' ? 'mobile' : 'desktop'}
+                secondary={story.beat4.sideImage2}
+              />
             )}
           </div>
         )}
@@ -658,9 +827,13 @@ function UXStorySection({ story }: { story: StoryWithKey }) {
               </p>
               <h4 className="text-white text-lg font-semibold mb-2.5 leading-tight">{e.title}</h4>
               <p className="text-gray-300 text-sm leading-relaxed mb-4">{e.body}</p>
-              {e.status === 'shipped' && e.image ? (
-                <div className="mt-auto rounded-lg overflow-hidden border border-emerald-500/30">
-                  <Image src={e.image} alt={`${e.title} — shipped solution`} width={1200} height={800} className="w-full h-auto" />
+              {e.image ? (
+                <div
+                  className={`mt-auto rounded-lg overflow-hidden border ${
+                    e.status === 'shipped' ? 'border-emerald-500/30' : 'border-red-500/25 opacity-80'
+                  }`}
+                >
+                  <ZoomableImage src={e.image} alt={`${e.title} — ${e.status} concept`} width={1200} height={800} className="w-full h-auto" />
                 </div>
               ) : (
                 <div className="mt-auto py-3 px-4 bg-zinc-800/60 border border-white/10 rounded-lg text-center">
@@ -679,7 +852,7 @@ function UXStorySection({ story }: { story: StoryWithKey }) {
             <p className="text-gray-100 text-base md:text-lg leading-[1.85]">{story.tradeoff}</p>
           </div>
           {story.beat8Image && (
-            <StoryFigure src={story.beat8Image.src} caption={story.beat8Image.caption} alt={story.beat8Image.caption} />
+            <StoryFigure src={story.beat8Image.src} caption={story.beat8Image.caption} alt={story.beat8Image.caption} device={story.platformKey === 'mobile' ? 'mobile' : 'desktop'} />
           )}
         </div>
       </StoryBeat>
@@ -703,7 +876,7 @@ function UXStorySection({ story }: { story: StoryWithKey }) {
             </a>
           </div>
           {story.unlocked.image && (
-            <StoryFigure src={story.unlocked.image.src} caption={story.unlocked.image.caption} alt={story.unlocked.image.caption} />
+            <StoryFigure src={story.unlocked.image.src} caption={story.unlocked.image.caption} alt={story.unlocked.image.caption} device={story.platformKey === 'mobile' ? 'mobile' : 'desktop'} />
           )}
         </div>
       </StoryBeat>
@@ -748,6 +921,7 @@ export default function CareAtHome() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
 
   return (
+    <LightboxProvider>
     <div className="min-h-screen bg-black relative overflow-x-hidden">
       {/* Scroll progress bar */}
       <motion.div
@@ -1330,5 +1504,6 @@ export default function CareAtHome() {
         </button>
       )}
     </div>
+    </LightboxProvider>
   )
 }

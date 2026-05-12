@@ -1,0 +1,249 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+  <!-- Background -->
+  <rect width="1600" height="900" fill="#ffffff"/>
+  
+  <!-- Top navigation bar (Care@Home style) -->
+  <rect x="0" y="0" width="1600" height="60" fill="#0a2540"/>
+  <text x="80" y="38" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="500">Care@Home</text>
+  <circle cx="40" cy="30" r="3" fill="#ffffff"/>
+  <circle cx="40" cy="22" r="3" fill="#ffffff"/>
+  <circle cx="40" cy="38" r="3" fill="#ffffff"/>
+  <rect x="34" y="20" width="12" height="2" fill="#ffffff"/>
+  <rect x="34" y="29" width="12" height="2" fill="#ffffff"/>
+  <rect x="34" y="38" width="12" height="2" fill="#ffffff"/>
+  <text x="1480" y="38" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="14">Lynne Spears</text>
+  <circle cx="1560" cy="30" r="16" fill="#e0e0e0"/>
+  <text x="1560" y="35" fill="#666" font-family="-apple-system, sans-serif" font-size="12" text-anchor="middle">LS</text>
+  
+  <!-- Patient header bar (compressed/cramped) -->
+  <rect x="0" y="60" width="1600" height="70" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5"/>
+  <circle cx="50" cy="95" r="22" fill="#e0e0e0"/>
+  <text x="50" y="100" fill="#666" font-family="-apple-system, sans-serif" font-size="13" text-anchor="middle">TD</text>
+  <text x="90" y="85" fill="#1a1a1a" font-family="-apple-system, sans-serif" font-size="14" font-weight="600">Tammy Donald</text>
+  <text x="90" y="105" fill="#666" font-family="-apple-system, sans-serif" font-size="11">MRN: PT003234</text>
+  <text x="90" y="120" fill="#666" font-family="-apple-system, sans-serif" font-size="10">Post acute · Heart failure</text>
+  
+  <!-- Cramped header info (too many fields squeezed in) -->
+  <g font-family="-apple-system, sans-serif">
+    <text x="240" y="80" fill="#999" font-size="10">D.O.B</text>
+    <text x="240" y="95" fill="#1a1a1a" font-size="12">10 May 1965</text>
+    <text x="340" y="80" fill="#999" font-size="10">Contact</text>
+    <text x="340" y="95" fill="#1a1a1a" font-size="12">917 123 4567</text>
+    <text x="450" y="80" fill="#999" font-size="10">Comorbidities</text>
+    <text x="450" y="95" fill="#1a1a1a" font-size="12">Hypertension</text>
+    <text x="560" y="80" fill="#999" font-size="10">Clinic</text>
+    <text x="560" y="95" fill="#1a1a1a" font-size="12">Arizona</text>
+    <text x="640" y="80" fill="#999" font-size="10">Provider</text>
+    <text x="640" y="95" fill="#1a1a1a" font-size="12">Dr. Stephen</text>
+    <text x="740" y="80" fill="#999" font-size="10">Program start</text>
+    <text x="740" y="95" fill="#1a1a1a" font-size="12">12 days</text>
+    <text x="840" y="80" fill="#999" font-size="10">Next call</text>
+    <text x="840" y="95" fill="#1a1a1a" font-size="12">20 June 2020</text>
+    <text x="940" y="80" fill="#999" font-size="10">Last attended</text>
+    <text x="940" y="95" fill="#1a1a1a" font-size="12">8 hours ago</text>
+    <text x="1060" y="80" fill="#999" font-size="10">Status</text>
+    <text x="1060" y="95" fill="#A32D2D" font-size="12">Alert</text>
+    <text x="1140" y="80" fill="#999" font-size="10">Risk</text>
+    <text x="1140" y="95" fill="#d4a017" font-size="12">High</text>
+    <text x="1220" y="80" fill="#999" font-size="10">Adherence</text>
+    <text x="1220" y="95" fill="#1a1a1a" font-size="12">78%</text>
+    <text x="1320" y="80" fill="#999" font-size="10">Care team</text>
+    <text x="1320" y="95" fill="#1a1a1a" font-size="12">3 members</text>
+    <text x="1420" y="80" fill="#999" font-size="10">Devices</text>
+    <text x="1420" y="95" fill="#0F6E56" font-size="12">All connected</text>
+  </g>
+  
+  <!-- TAB STRIP - too many tabs visible all at once -->
+  <rect x="0" y="130" width="1600" height="38" fill="#ffffff" stroke="#e0e0e0" stroke-width="0.5"/>
+  <g font-family="-apple-system, sans-serif" font-size="12" fill="#666">
+    <text x="40" y="153">Vitals</text>
+    <text x="100" y="153">Information</text>
+    <text x="180" y="153">Evaluations</text>
+    <text x="270" y="153">Medications</text>
+    <text x="360" y="153">Audio samples</text>
+    <text x="460" y="153">Clinical notes</text>
+    <text x="555" y="153">Care logs</text>
+    <text x="625" y="153">Patient diary</text>
+    <text x="710" y="153">Devices</text>
+    <text x="775" y="153">Care team</text>
+    <text x="855" y="153">Reports</text>
+    <text x="920" y="153">Alerts</text>
+    <text x="970" y="153">Threshold</text>
+    <text x="1045" y="153">Activity</text>
+    <text x="1110" y="153">Timeline</text>
+    <text x="1180" y="153">Tasks</text>
+    <text x="1230" y="153">Escalations</text>
+    <text x="1320" y="153">Messages</text>
+    <text x="1410" y="153">Settings</text>
+    <text x="1480" y="153">More...</text>
+  </g>
+  
+  <!-- THE CHAOS: too many widgets crammed together -->
+  
+  <!-- Row 1: Vitals graphs (4 small graphs squeezed in) -->
+  <g>
+    <rect x="20" y="185" width="380" height="160" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="35" y="205" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Heart rate (24h)</text>
+    <text x="35" y="220" font-family="-apple-system, sans-serif" font-size="9" fill="#999">Everion · bpm</text>
+    <polyline points="35,310 70,290 105,300 140,275 175,310 210,285 245,295 280,270 315,300 350,285 380,290" stroke="#2563eb" stroke-width="1.2" fill="none"/>
+    <polyline points="35,330 70,320 105,325 140,315 175,335 210,310 245,320 280,305 315,325 350,315 380,320" stroke="#0F6E56" stroke-width="1.2" fill="none"/>
+  </g>
+  
+  <g>
+    <rect x="410" y="185" width="380" height="160" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="425" y="205" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Blood pressure (24h)</text>
+    <text x="425" y="220" font-family="-apple-system, sans-serif" font-size="9" fill="#999">mmHg · Manual</text>
+    <polyline points="425,290 460,285 495,295 530,280 565,300 600,290 635,310 670,295 705,300 740,285 770,290" stroke="#A32D2D" stroke-width="1.2" fill="none"/>
+    <polyline points="425,325 460,320 495,330 530,315 565,335 600,325 635,340 670,330 705,335 740,325 770,330" stroke="#666" stroke-width="1.2" fill="none"/>
+  </g>
+  
+  <g>
+    <rect x="800" y="185" width="380" height="160" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="815" y="205" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">SpO2 (24h)</text>
+    <text x="815" y="220" font-family="-apple-system, sans-serif" font-size="9" fill="#999">VitalPatch · %</text>
+    <polyline points="815,260 850,265 885,255 920,260 955,250 990,265 1025,255 1060,260 1095,255 1130,260 1160,258" stroke="#0F6E56" stroke-width="1.2" fill="none"/>
+  </g>
+  
+  <g>
+    <rect x="1190" y="185" width="390" height="160" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="1205" y="205" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Weight trend (7d)</text>
+    <text x="1205" y="220" font-family="-apple-system, sans-serif" font-size="9" fill="#999">Manual · lb</text>
+    <polyline points="1205,290 1260,280 1315,295 1370,270 1425,285 1480,275 1535,265 1570,260" stroke="#2563eb" stroke-width="1.5" fill="none"/>
+    <circle cx="1260" cy="280" r="3" fill="#2563eb"/>
+    <circle cx="1370" cy="270" r="3" fill="#2563eb"/>
+    <circle cx="1480" cy="275" r="3" fill="#2563eb"/>
+    <circle cx="1570" cy="260" r="3" fill="#2563eb"/>
+  </g>
+  
+  <!-- Row 2: Alerts list, medications, notes -->
+  <g>
+    <rect x="20" y="355" width="380" height="180" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="35" y="375" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Active alerts (12)</text>
+    <rect x="35" y="385" width="350" height="22" fill="#fff5f5" stroke="#A32D2D" stroke-width="0.5"/>
+    <circle cx="48" cy="396" r="3" fill="#A32D2D"/>
+    <text x="58" y="400" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">HR above 120 bpm — 09:25 AM</text>
+    <rect x="35" y="412" width="350" height="22" fill="#fff5f5" stroke="#A32D2D" stroke-width="0.5"/>
+    <circle cx="48" cy="423" r="3" fill="#A32D2D"/>
+    <text x="58" y="427" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">BP threshold exceeded — 09:18 AM</text>
+    <rect x="35" y="439" width="350" height="22" fill="#fffbe5" stroke="#d4a017" stroke-width="0.5"/>
+    <circle cx="48" cy="450" r="3" fill="#d4a017"/>
+    <text x="58" y="454" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Missed medication — 09:00 AM</text>
+    <rect x="35" y="466" width="350" height="22" fill="#fffbe5" stroke="#d4a017" stroke-width="0.5"/>
+    <circle cx="48" cy="477" r="3" fill="#d4a017"/>
+    <text x="58" y="481" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Device offline 2h — 08:45 AM</text>
+    <rect x="35" y="493" width="350" height="22" fill="#f0f4f8" stroke="#666" stroke-width="0.5"/>
+    <circle cx="48" cy="504" r="3" fill="#666"/>
+    <text x="58" y="508" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Questionnaire pending — 08:00 AM</text>
+  </g>
+  
+  <g>
+    <rect x="410" y="355" width="380" height="180" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="425" y="375" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Medications (8 active)</text>
+    <text x="425" y="395" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Lisinopril 10mg · 2x daily · Active</text>
+    <text x="425" y="412" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Metoprolol 50mg · 2x daily · Active</text>
+    <text x="425" y="429" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Furosemide 20mg · 1x daily · Active</text>
+    <text x="425" y="446" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Spironolactone 25mg · 1x daily · Active</text>
+    <text x="425" y="463" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Atorvastatin 40mg · 1x daily · Active</text>
+    <text x="425" y="480" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Aspirin 81mg · 1x daily · Active</text>
+    <text x="425" y="497" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Sacubitril/Valsartan · 2x daily · Active</text>
+    <text x="425" y="514" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Empagliflozin 10mg · 1x daily · Active</text>
+  </g>
+  
+  <g>
+    <rect x="800" y="355" width="380" height="180" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="815" y="375" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Clinical notes (recent)</text>
+    <text x="815" y="395" font-family="-apple-system, sans-serif" font-size="10" fill="#666">12 Jun · Nurse Anne</text>
+    <text x="815" y="408" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">Patient reports increased fatigue. Weight up 2 lbs...</text>
+    <text x="815" y="430" font-family="-apple-system, sans-serif" font-size="10" fill="#666">11 Jun · Dr. Stephen</text>
+    <text x="815" y="443" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">Adjusted Furosemide. Monitor sodium intake closely...</text>
+    <text x="815" y="465" font-family="-apple-system, sans-serif" font-size="10" fill="#666">10 Jun · Nurse Agustina</text>
+    <text x="815" y="478" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">Video call completed. Patient compliant with meds...</text>
+    <text x="815" y="500" font-family="-apple-system, sans-serif" font-size="10" fill="#666">09 Jun · Nurse Anne</text>
+    <text x="815" y="513" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">Reviewed weekly questionnaire. Symptoms stable...</text>
+  </g>
+  
+  <g>
+    <rect x="1190" y="355" width="390" height="180" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="1205" y="375" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Care logs</text>
+    <text x="1205" y="395" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">10:25 — Video consult · 35 min</text>
+    <text x="1205" y="412" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">09:18 — Chart review · 12 min</text>
+    <text x="1205" y="429" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">08:45 — Medication review · 8 min</text>
+    <text x="1205" y="446" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">08:00 — Vitals reviewed · 5 min</text>
+    <text x="1205" y="463" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Previous day:</text>
+    <text x="1205" y="480" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">14:30 — Phone call · 18 min</text>
+    <text x="1205" y="497" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">11:15 — Device sync issue · 22 min</text>
+    <text x="1205" y="514" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">09:00 — Daily review · 15 min</text>
+  </g>
+  
+  <!-- Row 3: Even more stuff -->
+  <g>
+    <rect x="20" y="545" width="380" height="170" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="35" y="565" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Evaluations (12 pending)</text>
+    <rect x="35" y="575" width="350" height="22" fill="#fffbe5"/>
+    <text x="45" y="590" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">Heart failure questionnaire · Due today</text>
+    <rect x="35" y="602" width="350" height="22" fill="#f0f4f8"/>
+    <text x="45" y="617" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">KCCQ-12 · Due tomorrow</text>
+    <rect x="35" y="629" width="350" height="22" fill="#f0f4f8"/>
+    <text x="45" y="644" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">EQ-5D-5L · Due Friday</text>
+    <rect x="35" y="656" width="350" height="22" fill="#fff5f5"/>
+    <text x="45" y="671" font-family="-apple-system, sans-serif" font-size="10" fill="#1a1a1a">COPD questionnaire · Overdue 2 days</text>
+    <text x="35" y="697" font-family="-apple-system, sans-serif" font-size="10" fill="#999">+ 8 more...</text>
+  </g>
+  
+  <g>
+    <rect x="410" y="545" width="380" height="170" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="425" y="565" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Patient diary (5 unread)</text>
+    <text x="425" y="585" font-family="-apple-system, sans-serif" font-size="10" fill="#666">12 Jun 11:25</text>
+    <text x="425" y="598" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">"Medicine out of stock. Will continue once...</text>
+    <text x="425" y="620" font-family="-apple-system, sans-serif" font-size="10" fill="#666">11 Jun 10:15</text>
+    <text x="425" y="633" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">"Always thirsty since 2 days, feeling thirsty all...</text>
+    <text x="425" y="655" font-family="-apple-system, sans-serif" font-size="10" fill="#666">10 Jun 13:35</text>
+    <text x="425" y="668" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">"Blacked out this morning. Awoke to wife calling...</text>
+    <text x="425" y="690" font-family="-apple-system, sans-serif" font-size="10" fill="#666">09 Jun 09:00</text>
+    <text x="425" y="703" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">"Losing weight, thighs thinning...</text>
+  </g>
+  
+  <g>
+    <rect x="800" y="545" width="380" height="170" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="815" y="565" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Devices status (5 connected)</text>
+    <text x="815" y="585" font-family="-apple-system, sans-serif" font-size="10" fill="#0F6E56">● Everion patch · 92% battery</text>
+    <text x="815" y="602" font-family="-apple-system, sans-serif" font-size="10" fill="#0F6E56">● VitalPatch · 78% battery</text>
+    <text x="815" y="619" font-family="-apple-system, sans-serif" font-size="10" fill="#d4a017">● iHealth BP cuff · 23% battery</text>
+    <text x="815" y="636" font-family="-apple-system, sans-serif" font-size="10" fill="#0F6E56">● Withings scale · Online</text>
+    <text x="815" y="653" font-family="-apple-system, sans-serif" font-size="10" fill="#A32D2D">● Pulse oximeter · Offline 2h</text>
+    <text x="815" y="675" font-family="-apple-system, sans-serif" font-size="10" fill="#666">Last sync: 12 Jun 09:25 AM</text>
+    <text x="815" y="692" font-family="-apple-system, sans-serif" font-size="10" fill="#666">Data points today: 1,247</text>
+  </g>
+  
+  <g>
+    <rect x="1190" y="545" width="390" height="170" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="1205" y="565" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Audio samples (3 new)</text>
+    <rect x="1205" y="580" width="360" height="30" fill="#f0f4f8" rx="2"/>
+    <polyline points="1215,595 1225,590 1235,600 1245,585 1255,605 1265,590 1275,600 1285,585 1295,600 1305,590" stroke="#2563eb" stroke-width="1" fill="none"/>
+    <text x="1320" y="600" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">Cough sample · 12 Jun</text>
+    <rect x="1205" y="615" width="360" height="30" fill="#f0f4f8" rx="2"/>
+    <polyline points="1215,630 1225,625 1235,635 1245,620 1255,640 1265,625 1275,635 1285,620 1295,635 1305,625" stroke="#2563eb" stroke-width="1" fill="none"/>
+    <text x="1320" y="635" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">Speech sample · 12 Jun</text>
+    <rect x="1205" y="650" width="360" height="30" fill="#f0f4f8" rx="2"/>
+    <polyline points="1215,665 1225,660 1235,670 1245,655 1255,675 1265,660 1275,670 1285,655 1295,670 1305,660" stroke="#2563eb" stroke-width="1" fill="none"/>
+    <text x="1320" y="670" font-family="-apple-system, sans-serif" font-size="9" fill="#1a1a1a">Breath sample · 11 Jun</text>
+  </g>
+  
+  <!-- Row 4: Even more (showing it goes on and on) -->
+  <g>
+    <rect x="20" y="725" width="1560" height="155" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5" rx="4"/>
+    <text x="35" y="745" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Timeline · Activity feed · Tasks · Escalations · Messages</text>
+    <text x="35" y="765" font-family="-apple-system, sans-serif" font-size="10" fill="#666">10:15 AM — Tammy Donald: Vitals recorded</text>
+    <text x="35" y="780" font-family="-apple-system, sans-serif" font-size="10" fill="#666">10:12 AM — Tammy Donald: Questionnaire submitted</text>
+    <text x="35" y="795" font-family="-apple-system, sans-serif" font-size="10" fill="#666">10:08 AM — Tammy Donald: Medication acknowledged</text>
+    <text x="35" y="810" font-family="-apple-system, sans-serif" font-size="10" fill="#666">10:05 AM — Tammy Donald: BP reading 160/91 (high)</text>
+    <text x="35" y="825" font-family="-apple-system, sans-serif" font-size="10" fill="#666">09:58 AM — Tammy Donald: Diary entry added</text>
+    <text x="35" y="840" font-family="-apple-system, sans-serif" font-size="10" fill="#666">09:45 AM — Tammy Donald: HR spike alert triggered</text>
+    <text x="35" y="855" font-family="-apple-system, sans-serif" font-size="10" fill="#666">09:32 AM — Tammy Donald: Care log updated by Nurse Anne</text>
+    <text x="35" y="870" font-family="-apple-system, sans-serif" font-size="10" fill="#999">Scroll for 47 more entries...</text>
+  </g>
+  
+  <!-- Visual indicator at bottom: "TOO MUCH" annotation overlay -->
+  <rect x="600" y="450" width="400" height="40" fill="#A32D2D" opacity="0.05" rx="4"/>
+  
+</svg>
