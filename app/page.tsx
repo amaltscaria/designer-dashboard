@@ -288,7 +288,7 @@ type Story = {
     boldPhrase?: string
     introTail?: string
   }
-  beat1Image?: { src: string; caption: string }
+  beat1Image?: { src: string; caption: string; tall?: boolean }
   beat1Stat?: { value: string; label: string; sub?: string }
   scene: { value: string; label: string }[]
   beat3: { title: string; intro: string; type: 'downstream' | 'patient-view' | 'five-tabs'; cards?: { title: string; body: string }[]; image1?: { src: string; caption: string }; image2?: { src: string; caption: string } }
@@ -298,7 +298,7 @@ type Story = {
   beat6: { existing: { items: string[]; tagline: string }; future: { items: string[]; tagline: string } }
   explorations: { status: 'rejected' | 'shipped'; title: string; body: string; image?: string }[]
   tradeoff: string
-  unlocked: { body: string; sub: string; image?: { src: string; caption: string } }
+  unlocked: { body: string; sub: string; image?: { src: string; caption: string }; images?: { src: string; caption: string }[]; device?: 'desktop' | 'mobile' }
   prototypeUrl: string
 }
 
@@ -386,7 +386,7 @@ const stories: StoryWithKey[] = [
     },
     beat1Image: { src: '/images/patient-app/05-todays-tasks.jpeg', caption: 'Today\'s tasks — what the patient sees the moment they open the app' },
     beat1Stat: { value: '2 min', label: 'Target time to record a vital', sub: 'Down from 10 minutes. The threshold between a habit and an abandoned app.' },
-    beat8Image: { src: '/images/patient-app/06-bp-recorded.jpeg', caption: 'A vital recorded — the single next task, done' },
+    beat8Image: { src: '/images/patient-app/10-todays-tasks-full.jpeg', caption: "Today's tasks — the home screen now shows only the next thing to do" },
     scene: [
       { value: '1', label: 'Designer (sole)' },
       { value: '1', label: 'PM' },
@@ -438,7 +438,13 @@ const stories: StoryWithKey[] = [
     unlocked: {
       body: 'Patients stopped abandoning the app in week two. Recording vitals became a 2 minute habit, not a 10 minute chore. Clinicians stopped chasing missing readings. The app became part of the daily routine, not another thing to manage.',
       sub: 'The simplest part of the platform. The most important.',
-      image: { src: '/images/patient-app/06-bp-recorded.jpeg', caption: 'Two minutes. Done. The habit, not the chore.' },
+      images: [
+        { src: '/images/patient-app/11-bp-entry-empty.jpeg', caption: '01 · Open the task. Empty form, clear prompt.' },
+        { src: '/images/patient-app/12-bp-entry-error.jpeg', caption: '02 · Validation catches mistakes the moment they happen.' },
+        { src: '/images/patient-app/13-bp-entry-saving.jpeg', caption: '03 · Three numbers entered. Saving.' },
+        { src: '/images/patient-app/14-bp-entry-saved.jpeg', caption: '04 · Saved. Two minutes from open to done.' },
+      ],
+      device: 'mobile',
     },
     prototypeUrl: 'https://designer-dashboard.aruntscaria.com',
   },
@@ -448,7 +454,7 @@ const stories: StoryWithKey[] = [
     name: 'Designer Dashboard',
     subtitle: 'One configuration tool. Three downstream products. Programs running across geographies and languages.',
     beats: {
-      quote: '"Mayo Singapore needs heart failure in English, Spanish, and Chinese. Every program is a custom build."',
+      quote: '"Mayo Singapore needs the heart failure questionnaire in English, Spanish, and Chinese. Every program is a custom build."',
       intro: 'Care@Home was rolling out to ',
       boldPhrase: 'major US health systems and global pharma partners',
       introTail: '. Each program needed its own care path, its own vitals, its own questionnaires, in its own languages. Engineering kept rebuilding the same setup for every new client. Onboarding took weeks per program.',
@@ -464,15 +470,15 @@ const stories: StoryWithKey[] = [
       title: '03 · ONE TOOL. THREE DOWNSTREAM PRODUCTS.',
       intro: 'A single change in the dashboard reaches every product clinicians and patients use.',
       type: 'downstream',
-      image1: { src: '/images/designer-dashboard/04-patient-app-vitals.png', caption: 'Patient App — what patients see' },
-      image2: { src: '/images/designer-dashboard/05-web-dashboard-carelogs.png', caption: 'Web Dashboard — what nurses see' },
+      image1: { src: '/images/designer-dashboard/09-patient-creation.jpeg', caption: 'Patient creation — defines the onboarding fields the patient app collects' },
+      image2: { src: '/images/designer-dashboard/10-bp-measurement.jpeg', caption: 'BP measurement — defines the schedule and devices the web dashboard tracks' },
     },
     beat4: {
       title: '04 · WHAT THEY CONFIGURE',
       intro: 'A program for heart failure or COPD is not one screen. It is a stack of decisions.',
       type: 'depth',
-      image1: { src: '/images/designer-dashboard/02-vitals-monitoring.png', caption: 'Vitals scheduling, devices, compliance' },
-      image2: { src: '/images/designer-dashboard/03-multilingual-questionnaire.png', caption: 'Multilingual custom questionnaires' },
+      image1: { src: '/images/designer-dashboard/11-preview-mobile.jpeg', caption: 'Mobile preview — see exactly what patients will see' },
+      image2: { src: '/images/designer-dashboard/12-preview-tablet.jpeg', caption: 'Tablet preview — same configuration, different surface' },
     },
     painpoints: [
       { eyebrow: 'CLIENTS', text: 'No control over their own programs' },
@@ -490,11 +496,11 @@ const stories: StoryWithKey[] = [
       },
     },
     explorations: [
-      { status: 'rejected', title: 'One long form per program', body: 'Too many clicks, too many fields. Admins lost their place midway through.' },
-      { status: 'rejected', title: 'Side by side editor with live preview', body: 'The preview pulled attention away from the configuration. Admins watched the preview instead of focusing on the work.' },
-      { status: 'shipped', title: 'Nested categories, preview on demand', body: 'Drill into one category at a time. Switch tabs to preview each downstream product.', image: '/images/designer-dashboard/02-vitals-monitoring.png' },
+      { status: 'rejected', title: 'One long form per program', body: "Every field for every product in one scrollable form. Admins lost their place by row twelve. Configuring the Patient app and Web dashboard felt like the same job, which it wasn't.", image: '/images/designer-dashboard/15-rejected-long-form.jpeg' },
+      { status: 'rejected', title: 'Sequential wizard, one product at a time', body: 'Step through Patient app, Web dashboard, HCP app in order. Admins finished step one with no way to compare it to step two. The shared logic between products got lost between clicks.', image: '/images/designer-dashboard/14-rejected-sequential-wizard.jpeg' },
+      { status: 'shipped', title: 'One category, one product, one preview', body: 'Configure one category at a time. Switch the tab to preview how it lands in the Patient app, Web dashboard, or HCP app. The admin always knows what they are editing and where it will show up.', image: '/images/designer-dashboard/13-shipped-tab-preview.jpeg' },
     ],
-    beat1Image: { src: '/images/designer-dashboard/01-program-creation.png', caption: 'Program creation: Mayo_Singapore + Novartis' },
+    beat1Image: { src: '/images/designer-dashboard/08-questionnaire-multilang.jpeg', caption: 'Custom questionnaire — branching logic, three languages, one configuration screen', tall: true },
     beat8Image: { src: '/images/designer-dashboard/07-program-features.png', caption: 'Program features — every toggle a deliberate exposure of depth' },
     tradeoff: 'The dashboard exposes a lot. Every vital, every schedule, every language, every rule. Admins can configure it all, but it requires training. This is not a tool a nurse picks up in five minutes. A deliberate choice. Depth for the people who run the platform, simplicity for the people downstream.',
     unlocked: {
@@ -524,7 +530,7 @@ function StoryBeat({ eyebrow, children, className = '' }: { eyebrow: string; chi
   )
 }
 
-function StoryFigure({ src, caption, alt, device = 'desktop', secondary }: { src: string; caption?: string; alt: string; device?: 'desktop' | 'mobile'; secondary?: { src: string; caption: string } }) {
+function StoryFigure({ src, caption, alt, device = 'desktop', secondary, tall = false }: { src: string; caption?: string; alt: string; device?: 'desktop' | 'mobile'; secondary?: { src: string; caption: string }; tall?: boolean }) {
   if (device === 'mobile') {
     const phones = secondary ? [{ src, alt, caption }, { src: secondary.src, alt: secondary.caption, caption: secondary.caption }] : [{ src, alt, caption }];
     return (
@@ -576,12 +582,208 @@ function StoryFigure({ src, caption, alt, device = 'desktop', secondary }: { src
       </figure>
     )
   }
+  if (tall) {
+    return (
+      <figure className="m-0">
+        <div className="relative rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl shadow-black/40 overflow-hidden">
+          <div className="overflow-y-auto custom-scroll" style={{ height: 'min(620px, 70vh)' }}>
+            <ZoomableImage src={src} alt={alt} width={1600} height={4000} className="w-full h-auto block" />
+          </div>
+          {/* Top + bottom fade hints — make scrollability discoverable */}
+          <div className="pointer-events-none absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-zinc-950 to-transparent" />
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-zinc-950 to-transparent" />
+          <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-orange-400">
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+            <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-gray-200">Scroll</span>
+          </div>
+        </div>
+        {caption && <figcaption className="font-mono text-[11px] tracking-wider text-gray-400 mt-3 pl-1">{caption}</figcaption>}
+      </figure>
+    )
+  }
   return (
     <figure className="m-0">
       <div className="rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 shadow-2xl shadow-black/40">
         <ZoomableImage src={src} alt={alt} width={1600} height={1000} className="w-full h-auto" />
       </div>
       {caption && <figcaption className="font-mono text-[11px] tracking-wider text-gray-400 mt-3 pl-1">{caption}</figcaption>}
+    </figure>
+  )
+}
+
+function StorySlideshow({ images, device = 'desktop' }: { images: { src: string; caption: string }[]; device?: 'desktop' | 'mobile' }) {
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const { open } = useLightbox()
+
+  useEffect(() => {
+    if (paused) return
+    const id = setInterval(() => setIndex((i) => (i + 1) % images.length), 3500)
+    return () => clearInterval(id)
+  }, [paused, images.length])
+
+  const go = (dir: 1 | -1) => setIndex((i) => (i + dir + images.length) % images.length)
+  const current = images[index]
+
+  if (device === 'mobile') {
+    return (
+      <figure
+        className="m-0"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black shadow-2xl shadow-black/40 flex items-center justify-center py-10 md:py-14 px-4">
+          <div
+            className="absolute inset-0 opacity-[0.05] pointer-events-none"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
+              maskImage: 'radial-gradient(ellipse at center, black 35%, transparent 75%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at center, black 35%, transparent 75%)',
+            }}
+          />
+          <div className="absolute top-6 left-6 font-mono text-[9px] tracking-[0.3em] uppercase text-orange-400/70">
+            iOS · Patient · Step {index + 1}/{images.length}
+          </div>
+          <div className="absolute bottom-6 right-6 font-mono text-[9px] tracking-[0.3em] uppercase text-gray-500">Care@Home</div>
+
+          {/* Phone frame with sliding image */}
+          <div className="relative rounded-[2.2rem] border-[10px] border-zinc-800 bg-zinc-900 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden max-w-[260px] w-full aspect-[375/812]">
+            <AnimatePresence mode="wait">
+              <motion.button
+                key={index}
+                type="button"
+                onClick={() => open({ src: current.src, alt: current.caption })}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                className="absolute inset-0 cursor-zoom-in border-0 bg-transparent p-0"
+                aria-label={`View ${current.caption} fullscreen`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={current.src} alt={current.caption} className="w-full h-full object-cover block" />
+              </motion.button>
+            </AnimatePresence>
+          </div>
+
+          {/* Prev / Next arrows */}
+          <button
+            onClick={() => go(-1)}
+            aria-label="Previous slide"
+            className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-black/80 hover:border-orange-500/60 transition-all"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6" /></svg>
+          </button>
+          <button
+            onClick={() => go(1)}
+            aria-label="Next slide"
+            className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-black/80 hover:border-orange-500/60 transition-all"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 6l6 6-6 6" /></svg>
+          </button>
+
+          {/* Auto-rotate progress bar */}
+          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/5">
+            <motion.div
+              key={`${index}-${paused}`}
+              initial={{ width: '0%' }}
+              animate={{ width: paused ? '0%' : '100%' }}
+              transition={{ duration: paused ? 0 : 3.5, ease: 'linear' }}
+              className="h-full bg-gradient-to-r from-orange-500 to-amber-400"
+            />
+          </div>
+        </div>
+
+        {/* Dot indicators + caption */}
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setIndex(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === index ? 'w-8 bg-orange-400' : 'w-1.5 bg-white/20 hover:bg-white/40'
+                }`}
+              />
+            ))}
+          </div>
+          <figcaption className="font-mono text-[11px] tracking-wider text-gray-300 text-right flex-1 truncate">
+            {current.caption}
+          </figcaption>
+        </div>
+      </figure>
+    )
+  }
+
+  // Desktop slideshow fallback
+  return (
+    <figure
+      className="m-0"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 shadow-2xl shadow-black/40">
+        <AnimatePresence mode="wait">
+          <motion.button
+            key={index}
+            type="button"
+            onClick={() => open({ src: current.src, alt: current.caption })}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -30 }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            className="block w-full p-0 m-0 border-0 bg-transparent cursor-zoom-in"
+            aria-label={`View ${current.caption} fullscreen`}
+          >
+            <Image src={current.src} alt={current.caption} width={1600} height={1000} className="w-full h-auto block" />
+          </motion.button>
+        </AnimatePresence>
+        <button
+          onClick={() => go(-1)}
+          aria-label="Previous slide"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-black/80 hover:border-orange-500/60 transition-all"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
+        <button
+          onClick={() => go(1)}
+          aria-label="Next slide"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-black/80 hover:border-orange-500/60 transition-all"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 6l6 6-6 6" /></svg>
+        </button>
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/5">
+          <motion.div
+            key={`${index}-${paused}`}
+            initial={{ width: '0%' }}
+            animate={{ width: paused ? '0%' : '100%' }}
+            transition={{ duration: paused ? 0 : 3.5, ease: 'linear' }}
+            className="h-full bg-gradient-to-r from-orange-500 to-amber-400"
+          />
+        </div>
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              aria-label={`Go to slide ${i + 1}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === index ? 'w-8 bg-orange-400' : 'w-1.5 bg-white/20 hover:bg-white/40'
+              }`}
+            />
+          ))}
+        </div>
+        <figcaption className="font-mono text-[11px] tracking-wider text-gray-300 text-right flex-1 truncate">
+          {current.caption}
+        </figcaption>
+      </div>
     </figure>
   )
 }
@@ -652,6 +854,7 @@ function UXStorySection({ story }: { story: StoryWithKey }) {
               caption={story.beat1Image.caption}
               alt={story.beat1Image.caption}
               device={story.platformKey === 'mobile' ? 'mobile' : 'desktop'}
+              tall={story.beat1Image.tall}
             />
           )}
         </div>
@@ -704,42 +907,42 @@ function UXStorySection({ story }: { story: StoryWithKey }) {
       <StoryBeat eyebrow={story.beat4.title}>
         <p className="text-gray-200 text-base md:text-lg leading-[1.8] mb-7 max-w-3xl">{story.beat4.intro}</p>
         {story.beat4.type === 'depth' && story.beat4.image1 && story.beat4.image2 && (
-          <div className="grid md:grid-cols-2 gap-6 items-start">
-            <div className="space-y-6">
+          <>
+            <div className="grid md:grid-cols-2 gap-6 items-start">
               <StoryFigure src={story.beat4.image1.src} caption={story.beat4.image1.caption} alt={story.beat4.image1.caption} />
-              {/* Stack of decisions — literal hierarchy illustrating the depth */}
-              <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/15 rounded-2xl p-5 md:p-6">
-                <p className="text-[10px] tracking-[0.25em] uppercase text-orange-400 font-semibold mb-4">A STACK OF DECISIONS</p>
-                <ol className="space-y-2">
-                  {[
-                    { label: 'Care path', depth: 0 },
-                    { label: 'Vital monitoring', depth: 1 },
-                    { label: 'BP measurement', depth: 2 },
-                    { label: 'Schedule 1', depth: 3 },
-                    { label: 'Frequency: Day / Week', depth: 4 },
-                    { label: 'Session start & end time', depth: 5 },
-                    { label: 'Repeat pattern', depth: 6 },
-                  ].map((row, i) => (
-                    <li
-                      key={i}
-                      className="flex items-center gap-3 text-[13px] md:text-sm leading-snug"
-                      style={{ paddingLeft: `${row.depth * 14}px` }}
-                    >
-                      <span className="font-mono text-[10px] text-orange-400/60 w-4 shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                      {row.depth > 0 && (
-                        <span className="text-orange-500/40 font-mono text-xs select-none" aria-hidden>└─</span>
-                      )}
-                      <span className={row.depth === 0 ? 'text-white font-semibold' : 'text-gray-200'}>{row.label}</span>
-                    </li>
-                  ))}
-                </ol>
-                <p className="text-gray-400 text-xs italic mt-4 leading-relaxed border-t border-white/10 pt-3">
-                  Seven levels deep, for one vital, in one care path. Every program is hundreds of these decisions, structured.
-                </p>
-              </div>
+              <StoryFigure src={story.beat4.image2.src} caption={story.beat4.image2.caption} alt={story.beat4.image2.caption} />
             </div>
-            <StoryFigure src={story.beat4.image2.src} caption={story.beat4.image2.caption} alt={story.beat4.image2.caption} />
-          </div>
+            {/* Stack of decisions — centered below, literal hierarchy illustrating the depth */}
+            <div className="mt-10 md:mt-14 max-w-2xl mx-auto bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/15 rounded-2xl p-5 md:p-7">
+              <p className="text-[10px] tracking-[0.25em] uppercase text-orange-400 font-semibold mb-4">A STACK OF DECISIONS</p>
+              <ol className="space-y-2">
+                {[
+                  { label: 'Care path', depth: 0 },
+                  { label: 'Vital monitoring', depth: 1 },
+                  { label: 'BP measurement', depth: 2 },
+                  { label: 'Schedule 1', depth: 3 },
+                  { label: 'Frequency: Day / Week', depth: 4 },
+                  { label: 'Session start & end time', depth: 5 },
+                  { label: 'Repeat pattern', depth: 6 },
+                ].map((row, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center gap-3 text-[13px] md:text-sm leading-snug"
+                    style={{ paddingLeft: `${row.depth * 14}px` }}
+                  >
+                    <span className="font-mono text-[10px] text-orange-400/60 w-4 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                    {row.depth > 0 && (
+                      <span className="text-orange-500/40 font-mono text-xs select-none" aria-hidden>└─</span>
+                    )}
+                    <span className={row.depth === 0 ? 'text-white font-semibold' : 'text-gray-200'}>{row.label}</span>
+                  </li>
+                ))}
+              </ol>
+              <p className="text-gray-400 text-xs italic mt-4 leading-relaxed border-t border-white/10 pt-3">
+                Seven levels deep, for one vital, in one care path. Every program is hundreds of these decisions, structured.
+              </p>
+            </div>
+          </>
         )}
         {story.beat4.type === 'today' && story.beat4.quote && (
           <div className="grid md:grid-cols-2 gap-10 md:gap-14 items-center">
@@ -875,9 +1078,11 @@ function UXStorySection({ story }: { story: StoryWithKey }) {
               </svg>
             </a>
           </div>
-          {story.unlocked.image && (
+          {story.unlocked.images && story.unlocked.images.length > 0 ? (
+            <StorySlideshow images={story.unlocked.images} device={story.unlocked.device ?? (story.platformKey === 'mobile' ? 'mobile' : 'desktop')} />
+          ) : story.unlocked.image ? (
             <StoryFigure src={story.unlocked.image.src} caption={story.unlocked.image.caption} alt={story.unlocked.image.caption} device={story.platformKey === 'mobile' ? 'mobile' : 'desktop'} />
-          )}
+          ) : null}
         </div>
       </StoryBeat>
     </article>
